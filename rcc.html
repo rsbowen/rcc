@@ -1,0 +1,103 @@
+<html>
+<head>
+<script language=javascript>
+var active_col = 0;
+var active_row = 0;
+var cw = "   #     ##    #   #     ".split("");
+
+function markActive() {
+  if(active_col < 0) active_col = 0;
+  if(active_col >= 5) active_col = 4;
+  if(active_row < 0) active_row = 0;
+  if(active_row >= 5) active_row = 4;
+  active_index = active_row*5+active_col;
+  new_class = cw[active_index] == "#" ? "activeAndFilled" : "active";
+  new_content = cw[active_index].match('[a-zA-Z]') ? cw[active_index] : "";
+  document.getElementById(active_row+"_"+active_col).setAttribute("class",new_class);
+  document.getElementById(active_row+"_"+active_col).innerHTML = new_content;
+}
+
+function unmarkActive() {
+  active_index = active_row*5+active_col;
+  new_class = cw[active_index] == "#" ? "filled" : "";
+  document.getElementById(active_row+"_"+active_col).setAttribute("class",new_class);
+}
+
+// The format I'll use for now is: # for filled, space for space, empty for letter.
+function fillExampleCword() {
+  var table = document.getElementById("crossword_table");
+  for(var row = 0; row < 5; row++) {
+    var tr = document.createElement('tr');
+    for(var col = 0; col < 5; col++) {
+      var td = document.createElement('td');
+      var index = col+5*row;
+      if(cw[index] == '#') td.setAttribute('class', 'filled');
+      td.setAttribute('id', row+'_'+col);
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+  markActive();
+}
+
+
+document.onkeydown = function(evt) {
+  evt = evt || window.event;
+  unmarkActive();
+  if(evt.keyCode == 37) {
+    active_col = active_col-1
+    markActive();
+  }
+  if(evt.keyCode == 38) {
+    active_row = active_row-1
+    markActive();
+  }
+  if(evt.keyCode == 39) {
+    active_col = active_col+1
+    markActive();
+  }
+  if(evt.keyCode == 40) {
+    active_row = active_row+1
+    markActive();
+  }
+  if(evt.keyCode == 32) {
+    active_index = 5*active_row+active_col;
+    cw[active_index] = (cw[active_index] == '#'?' ':'#');
+    markActive();
+  }
+  if(evt.keyCode >= 65 && evt.keyCode <= 90) {
+    window.cw[5*active_row+active_col] = String.fromCharCode(evt.keyCode)[0];
+  }
+  document.getElementById("cw").innerHTML = window.cw;
+  markActive();
+}
+</script>
+<style>
+td {width: 50px; height:50px;}
+td {text-align:center;vertical-align:middle; font-size:36}
+td.filled {background: black;}
+td.active {background: #ddddff;}
+td.activeAndFilled {background: repeating-linear-gradient(45deg, black, #ddddff);}
+table,td {border: 1px solid black;}
+table {border-collapse: collapse;}
+</style>
+</head>
+<body onload="fillExampleCword()">
+rcc
+<table>
+  <tr>
+    <td class="activeAndFilled"></td>
+    <td class='filled'></td>
+  </tr>
+  <tr>
+    <td>Q</td>
+    <td class='active'></td>
+  </tr>
+</table>
+
+<table id="crossword_table">
+</table>
+<span id = cw></span>
+</body>
+</html>
+
