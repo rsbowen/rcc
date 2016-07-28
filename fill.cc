@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "word_finder.h"
+#include "fill.h"
 
 using std::string;
 using std::vector;
