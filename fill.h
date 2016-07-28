@@ -3,7 +3,8 @@
 
 #include<string>
 #include "word_finder.h"
+#include "puzzle.h"
 
-std::string Fill(const std::string& puzzle, const WordFinder* word_finder, const int puzzle_size);
+std::string Fill(const Puzzle& puzzle, const WordFinder* word_finder);
 
 #endif //FILL_H

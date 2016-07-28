@@ -1,8 +1,10 @@
+#TODO: dependencies are probably wrong, just make clean/make all
+
 CC=g++
 COMPILE_FLAGS=--std=c++11 -c
 LINK_FLAGS=--std=c++11
 
-all: trie.o word_finder.o trie_test word_finder_test fill.o
+all: trie.o word_finder.o puzzle.o fill.o trie_test word_finder_test 
 
 #Object files
 
@@ -15,6 +17,9 @@ word_finder.o: word_finder.cc word_finder.h trie.o
 fill.o: fill.cc fill.h
 	$(CC) $(COMPILE_FLAGS) fill.cc
 
+puzzle.o: puzzle.cc puzzle.h
+	$(CC) $(COMPILE_FLAGS) puzzle.cc
+
 #Tests
 
 trie_test: trie.o trie_test.cc
@@ -23,8 +28,11 @@ trie_test: trie.o trie_test.cc
 word_finder_test: word_finder.o word_finder_test.cc
 	$(CC) $(LINK_FLAGS) word_finder_test.cc word_finder.o -o word_finder_test
 
-fill_test: word_finder.o fill.o fill_test.cc
-	$(CC) $(LINK_FLAGS) fill_test.cc fill.o word_finder.o -o fill_test
+fill_test: word_finder.o puzzle.o fill.o fill_test.cc
+	$(CC) $(LINK_FLAGS) fill_test.cc fill.o word_finder.o puzzle.o -o fill_test
+
+puzzle_test: puzzle.o puzzle_test.cc
+	$(CC) $(LINK_FLAGS) puzzle_test.cc puzzle.o -o puzzle_test
 
 clean:
-	rm *.o trie_test word_finder_test
+	rm *.o trie_test word_finder_test fill_test puzzle_test
