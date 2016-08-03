@@ -1,4 +1,6 @@
 #include "puzzle.h"
+// tmp
+#include <iostream>
 
 using std::string;
 

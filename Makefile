@@ -31,6 +31,9 @@ word_finder_test: word_finder.o word_finder_test.cc
 fill_test: word_finder.o puzzle.o fill.o fill_test.cc
 	$(CC) $(LINK_FLAGS) fill_test.cc fill.o word_finder.o puzzle.o -o fill_test
 
+fill_generative_test: word_finder.o puzzle.o fill.o fill_generative_test.cc
+	$(CC) $(LINK_FLAGS) fill_generative_test.cc fill.o word_finder.o puzzle.o -o fill_generative_test
+
 puzzle_test: puzzle.o puzzle_test.cc
 	$(CC) $(LINK_FLAGS) puzzle_test.cc puzzle.o -o puzzle_test
 

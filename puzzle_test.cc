@@ -40,6 +40,11 @@ int main(int argc, char* argv[]) {
   if(puzzle2.WordAt({1,2}, Direction::ACROSS) != "fg") std::cout << "WordAt(1,2,across)" << std::endl;
   if(puzzle2.WordAt({2,1}, Direction::DOWN) != "im") std::cout << "WordAt(2,1,down)" << std::endl;
 
+  // Test WordAt with spaces.
+  Puzzle puzzle3("a  c", 2);
+  if(puzzle3.WordAt({0,0}, Direction::ACROSS) != "a ") std::cout << "with spaces, WordAt(0,0,across)" << std::endl;
+  if(puzzle3.WordAt({1,0}, Direction::ACROSS) != " c") std::cout << "with spaces, WordAt(1,0,across)" << std::endl;
+
   // Test the SetWord function
   puzzle2.SetWord({3,0}, Direction::ACROSS, "test");
   if(puzzle2.WordAt({3,0}, Direction::ACROSS) != "test") std::cout << "SetWord(3,0,across)" << puzzle2.Data() << std::endl;

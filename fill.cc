@@ -21,47 +21,46 @@ using std::vector;
 // TODO(don't call both 'configuration' and 'puzzle'. Probably will be solved by a wrapper class instead of passing strings and size around everywhere.
 // TODO: maybe test individually?
 // TODO: maybe this should return is_down
-void DoConfig(Puzzle configuration, const WordFinder* word_finder, std::pair<int, int>* word_start, Direction* word_direction, bool* is_done, vector<string>* matches)
+DoConfigResult DoConfig(Puzzle configuration, const WordFinder* word_finder, std::pair<int, int>* word_start, Direction* word_direction, vector<string>* matches)
 {
   matches->clear();
   int min_num_matches_seen = std::numeric_limits<int>::max();
-  *is_done = true;
+  bool puzzle_is_complete = true;
   string pattern_for_min_matches;
   for(int row = 0; row < configuration.Size(); ++row) {
     for(int col = 0; col < configuration.Size(); ++col) {
+      // Only non-'#' squares can possibly be word starts.
       if(configuration.At({row, col}) == '#') continue;
       for(const Direction& direction : {Direction::DOWN, Direction::ACROSS}) {
-	bool is_word_start = false;
+        // Skip if not a word start.
         if (configuration.WordStart({row, col}, direction) != std::pair<int, int>(row, col)) continue;
         const string pattern = configuration.WordAt({row, col}, direction);
+        // If this is a complete word then nothing to do. 
+	if(std::find(pattern.begin(), pattern.end(), ' ') == pattern.end()) continue;
         int num_matches = word_finder->LazyNumberOfMatches(min_num_matches_seen, pattern);
         if(num_matches == 0) {
           // Bad! Matches is already empty so just return.
-	  std::cout << "empty matches for '" << pattern << "'" << std::endl;
-          return;
+          return DoConfigResult::IMPOSSIBLE;
         }
-        // If this is a complete word then nothing to do. 
-	std::cout << "checking word completeness." << std::endl;
-	if(std::find(pattern.begin(), pattern.end(), ' ') == pattern.end()) continue;
 	//If this is not the new shortest then nothing to do. 
-	std::cout << "checking new fewest" << std::endl;
 	if(num_matches >= min_num_matches_seen) continue;
+        min_num_matches_seen = num_matches;
 	pattern_for_min_matches = pattern;
-	*is_done = false;
+	puzzle_is_complete = false;
 	*word_direction = direction;
         *word_start = {row, col};
       }
     } 
   }
-  if(*is_done) return;
+  if(puzzle_is_complete) return DoConfigResult::COMPLETE;
   // Fill in *matches.
   word_finder->FillMatches(matches, pattern_for_min_matches);
+  return DoConfigResult::MATCHES_FOUND;
 }
 
 // Extremely naive approach to filling: a depth first search with pruning.
 // Maintain a stack of partially-filled puzzles and indices.
 // For each puzzle, we will search over all the possibilities for the one with the smallest number of possibilities. Recompute that every time (yikes, maybe can save memory here).
-
 string Fill(const Puzzle& puzzle, const WordFinder* word_finder) {
   std::stack<std::pair<Puzzle, int>> depth_first_stack;
   depth_first_stack.push({puzzle, 0});
@@ -70,11 +69,10 @@ string Fill(const Puzzle& puzzle, const WordFinder* word_finder) {
     depth_first_stack.pop();
     std::pair<int, int> next_word_coords;
     Direction direction;
-    bool is_done;
     vector<string> matches;
-    DoConfig(configuration.first, word_finder, &next_word_coords, &direction, &is_done, &matches);
-    if(is_done) return configuration.first.Data();
-    if(matches.empty()) {
+    DoConfigResult result = DoConfig(configuration.first, word_finder, &next_word_coords, &direction, &matches);
+    if(result == DoConfigResult::COMPLETE) return configuration.first.Data();
+    if(result == DoConfigResult::IMPOSSIBLE) {
       // Got into a configuration that's impossible; we're done.
       continue;
     }
