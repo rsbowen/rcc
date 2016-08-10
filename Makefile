@@ -20,6 +20,10 @@ fill.o: fill.cc fill.h
 puzzle.o: puzzle.cc puzzle.h
 	$(CC) $(COMPILE_FLAGS) puzzle.cc
 
+#TODO: I think by using the right compiler instead of g++, we can use object files here instead of compiling every time.
+fill.js: bindings.cc word_finder.cc puzzle.cc fill.cc
+	emcc --bind -o fill.js bindings.cc word_finder.cc puzzle.cc fill.cc
+
 #Tests
 
 trie_test: trie.o trie_test.cc
@@ -38,4 +42,4 @@ puzzle_test: puzzle.o puzzle_test.cc
 	$(CC) $(LINK_FLAGS) puzzle_test.cc puzzle.o -o puzzle_test
 
 clean:
-	rm *.o trie_test word_finder_test fill_test puzzle_test
+	rm *.o trie_test word_finder_test fill_test puzzle_test fill.js

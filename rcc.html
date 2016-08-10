@@ -1,9 +1,10 @@
 <html>
 <head>
+<script language="javascript" src="fill.js"></script>
 <script language=javascript>
 var active_col = 0;
 var active_row = 0;
-var cw = "   #     ##    #   #     ".split("");
+var cw = "                         ".split("");
 
 function markActive() {
   if(active_col < 0) active_col = 0;
@@ -71,6 +72,23 @@ document.onkeydown = function(evt) {
   document.getElementById("cw").innerHTML = window.cw;
   markActive();
 }
+
+
+function boundFill() {
+  console.log("filling");
+  fill = Module.fill_puzzle(cw.join(""));
+  console.log(fill);
+  if(fill != "") {
+    cw = fill.split("");
+  }
+  for(var row = 0; row<5; ++row) {
+    for(var col = 0; col<5; ++col) {
+      // TODO: this should set the class too, should be pulled out as helper functions
+      document.getElementById(row+"_"+col).innerHTML = cw[5*row+col];
+    }
+  }
+}
+
 </script>
 <style>
 td {width: 50px; height:50px;}
@@ -98,6 +116,7 @@ rcc
 <table id="crossword_table">
 </table>
 <span id = cw></span>
+<input type=button onClick="boundFill()">
 </body>
 </html>
 
