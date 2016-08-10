@@ -1,5 +1,4 @@
 #TODO: dependencies are probably wrong, just make clean/make all
-
 CC=g++
 COMPILE_FLAGS=--std=c++11 -c
 LINK_FLAGS=--std=c++11
@@ -40,6 +39,9 @@ fill_generative_test: word_finder.o puzzle.o fill.o fill_generative_test.cc
 
 puzzle_test: puzzle.o puzzle_test.cc
 	$(CC) $(LINK_FLAGS) puzzle_test.cc puzzle.o -o puzzle_test
+
+perf_test : perf_test.cc puzzle.o word_finder.o fill.o
+	$(CC) $(LINK_FLAGS) perf_test.cc puzzle.o word_finder.o fill.o -o perf_test
 
 clean:
 	rm *.o trie_test word_finder_test fill_test puzzle_test fill.js

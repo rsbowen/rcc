@@ -38,6 +38,7 @@ DoConfigResult DoConfig(Puzzle configuration, const WordFinder* word_finder, std
         // If this is a complete word then nothing to do. 
 	if(std::find(pattern.begin(), pattern.end(), ' ') == pattern.end()) continue;
         int num_matches = word_finder->LazyNumberOfMatches(min_num_matches_seen, pattern);
+	//std::cout << "pattern " << pattern << " had " << num_matches << " matches." << std::endl;
         if(num_matches == 0) {
           // Bad! Matches is already empty so just return.
           return DoConfigResult::IMPOSSIBLE;
@@ -65,24 +66,29 @@ string Fill(const Puzzle& puzzle, const WordFinder* word_finder) {
   std::stack<std::pair<Puzzle, int>> depth_first_stack;
   depth_first_stack.push({puzzle, 0});
   while(!depth_first_stack.empty()) {
+    //std::cout << "entering dfs, stack size is " << depth_first_stack.size() << std::endl;
     std::pair<Puzzle, int> configuration = depth_first_stack.top();
     depth_first_stack.pop();
     std::pair<int, int> next_word_coords;
     Direction direction;
     vector<string> matches;
     DoConfigResult result = DoConfig(configuration.first, word_finder, &next_word_coords, &direction, &matches);
+    //std::cout << "in dfs, there are " << matches.size() << " matches " << std::endl;
     if(result == DoConfigResult::COMPLETE) return configuration.first.Data();
-    if(result == DoConfigResult::IMPOSSIBLE) {
-      // Got into a configuration that's impossible; we're done.
-      continue;
-    }
     // Before we push the next search, push on this one.
-    if(matches.size()-1 < configuration.second) {
+    if(configuration.second + 1< matches.size()) {
+      //std::cout << "pushing back next-in-same-config" << std::endl;
       depth_first_stack.push({configuration.first, configuration.second+1});
+    }
+    if(result == DoConfigResult::IMPOSSIBLE) {
+      // Got into a configuration that's impossible; we're done; don't push back children
+      continue;
     }
     const string& match = matches[configuration.second];
     configuration.first.SetWord(next_word_coords, direction, match);
     // Depth-first our way down here.
+
+    //std::cout << "pushing back depth config" << std::endl;
     depth_first_stack.push({configuration.first, 0});
   }
   return ""; // No solution found.
