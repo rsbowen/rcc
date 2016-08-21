@@ -23,10 +23,15 @@ int main(int argc, char* argv[]) {
 
   VectorWordFinder vwf({words.begin(), words.end()});
   std::cout << "done reading" << std::endl;
+/*
   // Empty n-by-n puzzle
-  const size_t n=5;
+  const size_t n=13;
   const std::string puzzle_template(n*n, ' ');
   Puzzle puzzle(puzzle_template , n);
+*/
+
+  Puzzle puzzle("FAB# C   #DAGAIR# A   #OBOALI# K   #YES##D  E  # O  PRESS##   U##  A #TWELFTHS  N#  E  #A    D   D # K    G   ##  E    R #     T##  O#HONOR#H    O#     #IDD  M#     #S  ", 13);
+  std::cout << "Puzzle is " << puzzle.PrettyString();
 
   // Betcha this is real slow :)
   std::cout << "solution '" << Fill(puzzle, &vwf) << "'" << std::endl;

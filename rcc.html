@@ -4,14 +4,15 @@
 <script language=javascript>
 var active_col = 0;
 var active_row = 0;
-var cw = "                         ".split("");
+var size = 13;
+var cw = ' '.repeat(size*size).split(""); // TODO: surely a better way of doing this.
 
 function markActive() {
   if(active_col < 0) active_col = 0;
-  if(active_col >= 5) active_col = 4;
+  if(active_col >= size) active_col = size-1;
   if(active_row < 0) active_row = 0;
-  if(active_row >= 5) active_row = 4;
-  active_index = active_row*5+active_col;
+  if(active_row >= size) active_row = size-1;
+  active_index = active_row*size+active_col;
   new_class = cw[active_index] == "#" ? "activeAndFilled" : "active";
   new_content = cw[active_index].match('[a-zA-Z]') ? cw[active_index] : "";
   document.getElementById(active_row+"_"+active_col).setAttribute("class",new_class);
@@ -19,7 +20,7 @@ function markActive() {
 }
 
 function unmarkActive() {
-  active_index = active_row*5+active_col;
+  active_index = active_row*size+active_col;
   new_class = cw[active_index] == "#" ? "filled" : "";
   document.getElementById(active_row+"_"+active_col).setAttribute("class",new_class);
 }
@@ -27,11 +28,11 @@ function unmarkActive() {
 // The format I'll use for now is: # for filled, space for space, empty for letter.
 function fillExampleCword() {
   var table = document.getElementById("crossword_table");
-  for(var row = 0; row < 5; row++) {
+  for(var row = 0; row < size; row++) {
     var tr = document.createElement('tr');
-    for(var col = 0; col < 5; col++) {
+    for(var col = 0; col < size; col++) {
       var td = document.createElement('td');
-      var index = col+5*row;
+      var index = col+size*row;
       if(cw[index] == '#') td.setAttribute('class', 'filled');
       td.setAttribute('id', row+'_'+col);
       tr.appendChild(td);
@@ -48,28 +49,36 @@ document.onkeydown = function(evt) {
   if(evt.keyCode == 37) {
     active_col = active_col-1
     markActive();
+    evt.stopPropagation();
   }
   if(evt.keyCode == 38) {
     active_row = active_row-1
     markActive();
+    evt.stopPropagation();
   }
   if(evt.keyCode == 39) {
     active_col = active_col+1
     markActive();
+    evt.stopPropagation();
   }
   if(evt.keyCode == 40) {
     active_row = active_row+1
     markActive();
+    evt.stopPropagation();
   }
   if(evt.keyCode == 32) {
-    active_index = 5*active_row+active_col;
+    active_index = size*active_row+active_col;
     cw[active_index] = (cw[active_index] == '#'?' ':'#');
     markActive();
+    evt.stopPropagation();
   }
   if(evt.keyCode >= 65 && evt.keyCode <= 90) {
-    window.cw[5*active_row+active_col] = String.fromCharCode(evt.keyCode)[0];
+    window.cw[size*active_row+active_col] = String.fromCharCode(evt.keyCode)[0];
+    evt.stopPropagation();
   }
   document.getElementById("cw").innerHTML = window.cw;
+  document.getElementById("arow").innerHTML = active_row;
+  document.getElementById("acol").innerHTML = active_col;
   markActive();
 }
 
@@ -81,10 +90,10 @@ function boundFill() {
   if(fill != "") {
     cw = fill.split("");
   }
-  for(var row = 0; row<5; ++row) {
-    for(var col = 0; col<5; ++col) {
+  for(var row = 0; row<size; ++row) {
+    for(var col = 0; col<size; ++col) {
       // TODO: this should set the class too, should be pulled out as helper functions
-      document.getElementById(row+"_"+col).innerHTML = cw[5*row+col];
+      document.getElementById(row+"_"+col).innerHTML = cw[size*row+col];
     }
   }
 }
@@ -116,6 +125,10 @@ rcc
 <table id="crossword_table">
 </table>
 <span id = cw></span>
+<br>
+<span id = arow></span>
+<br>
+<span id = acol></span>
 <input type=button onClick="boundFill()">
 </body>
 </html>

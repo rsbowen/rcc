@@ -17,6 +17,7 @@ class Puzzle {
   void SetWord(std::pair<int, int> coords, Direction direction, std::string word);
   int Size();
   std::string Data();
+  std::string PrettyString();
   
  private:
   int puzzle_size_;

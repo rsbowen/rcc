@@ -41,6 +41,7 @@ DoConfigResult DoConfig(Puzzle configuration, const WordFinder* word_finder, std
 	//std::cout << "pattern " << pattern << " had " << num_matches << " matches." << std::endl;
         if(num_matches == 0) {
           // Bad! Matches is already empty so just return.
+          //std::cout << "Impossible on '" << pattern << "' row " << row << " col " << col; 
           return DoConfigResult::IMPOSSIBLE;
         }
 	//If this is not the new shortest then nothing to do. 

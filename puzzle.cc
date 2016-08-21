@@ -47,6 +47,20 @@ std::string Puzzle::WordAt(std::pair<int, int> coords, Direction direction) {
   return out;
 }
 
+std::string Puzzle::PrettyString() {
+  std::string output;
+  output.reserve(1+puzzle_size_*(puzzle_size_+1));
+
+  output.push_back('\n');
+  for(int row = 0; row < puzzle_size_; ++row) {
+    for(int col = 0; col < puzzle_size_; ++col) {
+      output.push_back(At(std::pair<int, int>(row, col)));
+    }
+    output.push_back('\n');
+  }
+  return output;
+}
+
 void Puzzle::SetWord(std::pair<int, int> coords, Direction direction, string word) {
   for (const char c : word) {
     Set(coords, c);
