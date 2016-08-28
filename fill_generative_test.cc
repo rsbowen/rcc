@@ -2,6 +2,7 @@
 #include "word_finder.h"
 #include "puzzle.h"
 #include <time.h>
+#include <algorithm>
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -34,8 +35,11 @@ string RandomlyAddBlanks(const string& completed_puzzle) {
 
 int main(int argc, char* argv[]) {
   srand(time(nullptr));
-  int test_size = 4;
-  for(int i = 0; i < 1000; ++i) {
+  // Constants which control the generative test
+  int test_size = 4;  // Side length of crossword
+  int extra_words_per_pattern = 10;
+  int random_attempts = 10000;
+  for(int i = 0; i < random_attempts; ++i) {
     // TODO: it might be inefficient to be reallocating the strings every time
     string grid = RandomGrid(test_size);
     Puzzle completed_puzzle(grid, test_size);
@@ -44,7 +48,7 @@ int main(int argc, char* argv[]) {
     const vector<string> patterns = incomplete_puzzle.AllWords();
     for(const string& pattern : patterns) {
       // Ensure there are some other words which match this pattern, to cause backtracking. Ignore any patterns with no spaces (TODO: inelegant)
-      for(int i = 0; i<10; ++i) {
+      for(int i = 0; i<extra_words_per_pattern; ++i) {
         int num_blanks = 0;
         string new_word = pattern;
 	for(int pattern_idx = 0; pattern_idx < pattern.size(); ++pattern_idx) {
@@ -57,12 +61,13 @@ int main(int argc, char* argv[]) {
 	dictionary.push_back(new_word);
       }
     }
+    std::random_shuffle(dictionary.begin(), dictionary.end());
     VectorWordFinder finder(dictionary);
     string filled = Fill(incomplete_puzzle, &finder);
     if(filled == "") {
-      std::cout << "generative failed with: " << completed_puzzle.Data() << "," << incomplete_puzzle.Data() << " and dictionary ";
+      std::cout << "generative failed with:" << std::endl << completed_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << " and dictionary ";
       for(const auto& word : dictionary) {
-        std::cout << word << ",";
+        std::cout << word << std::endl;
       }
       return 1;
     }
