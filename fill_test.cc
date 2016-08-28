@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 
   VectorWordFinder word_finder({"as", "to", "at", "so"});
   string filled = Fill(puzzle, &word_finder);
-  std::cout << filled << std::endl;
+  if(filled.size() == 0) { std::cout << "Couldn't fill simple test "; }
 
   // Example which forces backtracking
   // AS
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
   // But with "AB" in there to force backtracking
   VectorWordFinder bigger_word_finder({"ab", "as", "to", "at", "so"});
   filled = Fill(puzzle, &bigger_word_finder);
-  std::cout << filled << std::endl;
+  if(filled.size() == 0) { std::cout << "Couldn't fill backtracking test"; }
   return 0;
 }
 
