@@ -6,6 +6,22 @@
 #include "fill.h"
 #include "word_finder.h"
 
+// From a partially-completed crossword
+void RealWorldTest(const VectorWordFinder& finder) {
+  Puzzle puzzle("FAB# C   #DAGAIR# A   #OBOALI# K   #YES##D  E  # O  PRESS##   U##  A #TWELFTHS  N#  E  #A    D   D # K    G   ##  E    R #     T##  O#HONOR#H    O#     #IDD  M#     #S  ", 13);
+  std::cout << "Puzzle is " << puzzle.PrettyString();
+
+  // Betcha this is real slow :)
+  std::cout << "solution '" << Fill(puzzle, &finder) << "'" << std::endl;
+}
+
+void NXNTest(const VectorWordFinder& finder, const int side_length) {
+  // Empty n-by-n puzzle
+  const std::string puzzle_template(side_length*side_length, ' ');
+  Puzzle puzzle(puzzle_template, side_length);
+  std::cout << "solution '" << Fill(puzzle, &finder) << "'" << std::endl;
+}
+
 int main(int argc, char* argv[]) {
   std::ifstream dictionary_file;
   dictionary_file.open("/usr/share/dict/words");
@@ -21,18 +37,7 @@ int main(int argc, char* argv[]) {
     if(!word.empty()) words.insert(word);
   }
 
-  VectorWordFinder vwf({words.begin(), words.end()});
+  VectorWordFinder finder({words.begin(), words.end()});
   std::cout << "done reading" << std::endl;
-/*
-  // Empty n-by-n puzzle
-  const size_t n=13;
-  const std::string puzzle_template(n*n, ' ');
-  Puzzle puzzle(puzzle_template , n);
-*/
-
-  Puzzle puzzle("FAB# C   #DAGAIR# A   #OBOALI# K   #YES##D  E  # O  PRESS##   U##  A #TWELFTHS  N#  E  #A    D   D # K    G   ##  E    R #     T##  O#HONOR#H    O#     #IDD  M#     #S  ", 13);
-  std::cout << "Puzzle is " << puzzle.PrettyString();
-
-  // Betcha this is real slow :)
-  std::cout << "solution '" << Fill(puzzle, &vwf) << "'" << std::endl;
+  NXNTest(finder, 5);
 }

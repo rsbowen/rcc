@@ -1,6 +1,6 @@
 #TODO: dependencies are probably wrong, just make clean/make all
 CC=g++
-COMPILE_FLAGS=--std=c++11 -c -O2
+COMPILE_FLAGS=--std=c++11 -c -O2 -Wall
 LINK_FLAGS=--std=c++11
 
 all: trie.o word_finder.o puzzle.o fill.o trie_test word_finder_test 

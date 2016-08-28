@@ -5,18 +5,15 @@
 using std::string;
 
 int* Coord(Direction direction, std::pair<int, int>* coords) {
-  switch(direction) {
-    case Direction::DOWN: {
-      return &(coords->first);
-    }
-    case Direction::ACROSS: {
-      return &(coords->second);
-    }
+  if(direction == Direction::DOWN)
+  {
+    return &(coords->first);
   }
+  return &(coords->second);
 }
 
 // TODO: sanity check size
-Puzzle::Puzzle(const string& puzzle, int puzzle_size) : data_(puzzle), puzzle_size_(puzzle_size) {}
+Puzzle::Puzzle(const string& puzzle, int puzzle_size) : puzzle_size_(puzzle_size), data_(puzzle) {}
 
 char Puzzle::At(std::pair<int, int> coords) {
   // TODO: sanity check size
