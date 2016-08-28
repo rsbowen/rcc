@@ -3,12 +3,19 @@
 using std::vector;
 using std::string;
 
-// TODO: sort the dictionary by word length
-VectorWordFinder::VectorWordFinder(const vector<string>& dictionary) : dictionary_(dictionary) {}
+VectorWordFinder::VectorWordFinder(const vector<string>& dictionary) {
+  for(const auto& word : dictionary) {
+    if(word.size() >= dictionaries_.size()) {
+      dictionaries_.resize(word.size() + 1);
+    }
+    dictionaries_[word.size()].push_back(word);
+  }
+}
 
 int VectorWordFinder::LazyNumberOfMatches(int k, const string& pattern) const {
   int matches_so_far = 0;
-  for(const string& word : dictionary_) {
+  if(pattern.size() >= dictionaries_.size()) return 0;
+  for(const string& word : dictionaries_[pattern.size()]) {
     if (matches_so_far==k) return k;
     if(word.size() != pattern.size()) continue;
     bool match = true;
@@ -25,7 +32,8 @@ int VectorWordFinder::LazyNumberOfMatches(int k, const string& pattern) const {
 
 void VectorWordFinder::FillMatches(vector<string>* matches, const string& pattern) const {
   matches->clear();
-  for(const string& word : dictionary_) {
+  if(pattern.size() >= dictionaries_.size()) return;
+  for(const string& word : dictionaries_[pattern.size()]) {
     if(word.size() != pattern.size()) continue;
     bool match = true;
     for(int i = 0; i<word.size(); ++i) {
