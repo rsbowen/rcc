@@ -2,6 +2,7 @@
 #define PUZZLE_H
 
 #include <string>
+#include <vector>
 
 enum class Direction {ACROSS, DOWN};
 
@@ -16,6 +17,7 @@ class Puzzle {
   std::string WordAt(std::pair<int, int> coords, Direction direction);
   void SetWord(std::pair<int, int> coords, Direction direction, std::string word);
   int Size();
+  std::vector<std::string> AllWords();
   std::string Data();
   std::string PrettyString();
   

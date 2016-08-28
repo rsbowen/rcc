@@ -66,4 +66,18 @@ void Puzzle::SetWord(std::pair<int, int> coords, Direction direction, string wor
 }
   
 int Puzzle::Size() {return puzzle_size_;}
+
+std::vector<std::string> Puzzle::AllWords() {
+  std::vector<std::string> all_words;
+  for(int i = 0; i < puzzle_size_; ++i) {
+    for(int j = 0; j < puzzle_size_; ++j) {
+      for(const Direction& direction : {Direction::DOWN, Direction::ACROSS}) {
+        if(WordStart({i,j}, direction) != std::pair<int, int>(i,j)) continue;
+	all_words.push_back(WordAt({i,j}, direction));
+      }
+    }
+  }
+  return all_words;
+}
+
 string Puzzle::Data() {return data_;}

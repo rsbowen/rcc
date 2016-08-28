@@ -1,6 +1,7 @@
 #include "puzzle.h"
 
 #include <iostream>
+#include <algorithm>
 
 int main(int argc, char* argv[]) {
   // Test the At function
@@ -48,6 +49,16 @@ int main(int argc, char* argv[]) {
   // Test the SetWord function
   puzzle2.SetWord({3,0}, Direction::ACROSS, "test");
   if(puzzle2.WordAt({3,0}, Direction::ACROSS) != "test") std::cout << "SetWord(3,0,across)" << puzzle2.Data() << std::endl;
+
+  // Test the AllWords function
+  Puzzle all_words_puzzle("ab#cdefghijk#lmn", 4);
+  auto all_words = all_words_puzzle.AllWords();
+  std::sort(all_words.begin(), all_words.end());
+  std::vector<std::string> expected_all_words = {"ab", "adh", "beil", "c", "cgkn", "defg", "fjm", "hijk", "lmn"};
+  if(all_words.size() != expected_all_words.size()) std::cout << "all_words size wrong";
+  for(int i = 0; i<all_words.size(); ++i) {
+    if(all_words[i] != expected_all_words[i]) std::cout << "i is " << i << "all_words[i] is " << all_words[i] << " but expected_all_words[i] is " << expected_all_words[i];
+  }
 
   return 0;
 }
