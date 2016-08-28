@@ -44,4 +44,4 @@ perf_test : perf_test.cc puzzle.o word_finder.o fill.o
 	$(CC) $(LINK_FLAGS) perf_test.cc puzzle.o word_finder.o fill.o -o perf_test
 
 clean:
-	rm *.o trie_test word_finder_test fill_test puzzle_test fill.js perf_test generative_test
+	rm *.o trie_test word_finder_test fill_test puzzle_test fill.js perf_test fill_generative_test
