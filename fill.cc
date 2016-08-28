@@ -60,37 +60,43 @@ DoConfigResult DoConfig(Puzzle configuration, const WordFinder* word_finder, std
   return DoConfigResult::MATCHES_FOUND;
 }
 
+struct FillSearchState {
+  Puzzle puzzle_;
+  int which_; // TODO: better name
+  FillSearchState(const Puzzle& puzzle, const int which) : puzzle_(puzzle), which_(which) {}
+};
+
 // Extremely naive approach to filling: a depth first search with pruning.
 // Maintain a stack of partially-filled puzzles and indices.
 // For each puzzle, we will search over all the possibilities for the one with the smallest number of possibilities. Recompute that every time (yikes, maybe can save memory here).
 string Fill(const Puzzle& puzzle, const WordFinder* word_finder) {
-  std::stack<std::pair<Puzzle, int>> depth_first_stack;
+  std::stack<FillSearchState> depth_first_stack;
   depth_first_stack.push({puzzle, 0});
   while(!depth_first_stack.empty()) {
     //std::cout << "entering dfs, stack size is " << depth_first_stack.size() << std::endl;
-    std::pair<Puzzle, int> configuration = depth_first_stack.top();
+    FillSearchState search_state = depth_first_stack.top();
     depth_first_stack.pop();
     std::pair<int, int> next_word_coords;
     Direction direction;
     vector<string> matches;
-    DoConfigResult result = DoConfig(configuration.first, word_finder, &next_word_coords, &direction, &matches);
+    DoConfigResult result = DoConfig(search_state.puzzle_, word_finder, &next_word_coords, &direction, &matches);
     //std::cout << "in dfs, there are " << matches.size() << " matches " << std::endl;
-    if(result == DoConfigResult::COMPLETE) return configuration.first.Data();
+    if(result == DoConfigResult::COMPLETE) return search_state.puzzle_.Data();
     // Before we push the next search, push on this one.
-    if(configuration.second + 1< matches.size()) {
+    if(search_state.which_ + 1< matches.size()) {
       //std::cout << "pushing back next-in-same-config" << std::endl;
-      depth_first_stack.push({configuration.first, configuration.second+1});
+      depth_first_stack.push({search_state.puzzle_, search_state.which_ + 1});
     }
     if(result == DoConfigResult::IMPOSSIBLE) {
       // Got into a configuration that's impossible; we're done; don't push back children
       continue;
     }
-    const string& match = matches[configuration.second];
-    configuration.first.SetWord(next_word_coords, direction, match);
+    const string& match = matches[search_state.which_];
+    search_state.puzzle_.SetWord(next_word_coords, direction, match);
     // Depth-first our way down here.
 
     //std::cout << "pushing back depth config" << std::endl;
-    depth_first_stack.push({configuration.first, 0});
+    depth_first_stack.push({search_state.puzzle_, 0});
   }
   return ""; // No solution found.
 }
