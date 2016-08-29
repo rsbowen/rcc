@@ -2,9 +2,12 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 #include "fill.h"
 #include "word_finder.h"
+  
+using Clock = std::chrono::high_resolution_clock;
 
 // From a partially-completed crossword
 void RealWorldTest(const VectorWordFinder& finder) {
@@ -39,5 +42,13 @@ int main(int argc, char* argv[]) {
 
   VectorWordFinder finder({words.begin(), words.end()});
   std::cout << "done reading" << std::endl;
-  NXNTest(finder, 5);
+  const auto time_1 = Clock::now();
+  NXNTest(finder, 6);
+  const auto time_2 = Clock::now();
+  RealWorldTest(finder);
+  const auto time_3 = Clock::now();
+
+  std::chrono::duration<double> elapsed_seconds_1 = time_2 - time_1;
+  std::chrono::duration<double> elapsed_seconds_2 = time_3 - time_2;
+  std::cout << "nxn test " << elapsed_seconds_1.count() << " rw test " << elapsed_seconds_2.count()<<std::endl;
 }
