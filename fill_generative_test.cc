@@ -36,8 +36,8 @@ string RandomlyAddBlanks(const string& completed_puzzle) {
 int main(int argc, char* argv[]) {
   srand(time(nullptr));
   // Constants which control the generative test
-  int test_size = 4;  // Side length of crossword
-  int extra_words_per_pattern = 10;
+  int test_size = 2;  // Side length of crossword
+  int extra_words_per_pattern = 2;
   int random_attempts = 10000;
   for(int i = 0; i < random_attempts; ++i) {
     // TODO: it might be inefficient to be reallocating the strings every time
@@ -65,11 +65,22 @@ int main(int argc, char* argv[]) {
     VectorWordFinder finder(dictionary);
     string filled = Fill(incomplete_puzzle, &finder);
     if(filled == "") {
-      std::cout << "generative failed with:" << std::endl << completed_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << " and dictionary ";
+      std::cout << "generative failed with:" << std::endl << completed_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << " and dictionary " << std::endl;
       for(const auto& word : dictionary) {
         std::cout << word << std::endl;
       }
       return 1;
+    } else {
+      Puzzle filled_puzzle(filled, test_size);
+      for(const auto word : filled_puzzle.AllWords()) {
+        if(std::find(dictionary.begin(), dictionary.end(), word) == dictionary.end()) {
+	  std::cout << "Found not-in-dict word " << word << std::endl << filled_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << incomplete_puzzle.PrettyString() << " and dictionary " << std::endl;
+          for(const auto& word : dictionary) {
+            std::cout << word << std::endl;
+          }
+        return 1;
+	}
+      }
     }
   }
 }
