@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
       Puzzle filled_puzzle(filled, test_size);
       for(const auto word : filled_puzzle.AllWords()) {
         if(std::find(dictionary.begin(), dictionary.end(), word) == dictionary.end()) {
-	  std::cout << "Found not-in-dict word " << word << std::endl << filled_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << incomplete_puzzle.PrettyString() << " and dictionary " << std::endl;
+	  std::cout << "Found not-in-dict word " << word << std::endl << filled_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << " and dictionary " << std::endl;
           for(const auto& word : dictionary) {
             std::cout << word << std::endl;
           }

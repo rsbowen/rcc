@@ -46,6 +46,24 @@ int main(int argc, char* argv[]) {
   VectorWordFinder bigger_word_finder({"ab", "as", "to", "at", "so"});
   filled = Fill(puzzle, &bigger_word_finder);
   if(filled.size() == 0) { std::cout << "Couldn't fill backtracking test"; }
+
+  // Weird special-case test found by generative testing: the last fill wasn't having its cross-words checked. This is hard to test well. This particular test depends on implementation details: that the word with the fewest matches is filled first. In this test there is only one square left to fill. Its across has 1 possibilities and its down has 2, so the across will be filled first. But that across does not produce a valid puzzle.
+  // A B
+  // C ?
+  Puzzle final_fill_cross_puzzle("abc ", 2);
+  VectorWordFinder final_fill_cross_word_finder({"ab", "ac", "cx", "by", "bz"});
+  filled = Fill(final_fill_cross_puzzle, &final_fill_cross_word_finder);
+  if(filled.size() != 0) { std::cout << "Final-fill-cross test failed, producing the fill " << filled << std::endl;}
+
+  // Check that, if some initial word is not in the dictionary, it's still okay.
+  // A B
+  // C ?
+  Puzzle user_word_puzzle("abc ", 2);
+  VectorWordFinder user_word_finder({"cx", "bx"});
+  filled = Fill(user_word_puzzle, &user_word_finder);
+  if(filled.size() == 0) { std::cout << "User Word Puzzle failure"; }
+
+  // 
   return 0;
 }
 

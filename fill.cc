@@ -75,6 +75,14 @@ struct FillSearchState {
 // For each puzzle, we will search over all the possibilities for the one with the smallest number of possibilities. Recompute that every time (yikes, maybe can save memory here).
 string Fill(const Puzzle& puzzle, const WordFinder* word_finder) {
   std::stack<FillSearchState> depth_first_stack;
+  // Save the words which were user-provided in the sense that they are complete words in the puzzle.
+  std::vector<std::string> input_words = puzzle.AllWords();
+  std::vector<std::string> user_words = puzzle.AllWords();
+  for(const string& word : input_words) {
+    if(std::find(word.begin(), word.end(), ' ') != word.end()) continue;
+    user_words.push_back(word);
+  }
+
   depth_first_stack.push({puzzle});
   while(!depth_first_stack.empty()) {
     //std::cout << "entering dfs, stack size is " << depth_first_stack.size() << std::endl;
@@ -85,7 +93,21 @@ string Fill(const Puzzle& puzzle, const WordFinder* word_finder) {
       // TODO: just make this take a search state.
       search_state.result_ = DoConfig(search_state.puzzle_, word_finder, &search_state.next_word_coords_, &search_state.direction_, &search_state.matches_);
       //std::cout << "in dfs, there are " << matches.size() << " matches " << std::endl;
-      if(search_state.result_ == DoConfigResult::COMPLETE) return search_state.puzzle_.Data();
+      if(search_state.result_ == DoConfigResult::COMPLETE){
+        // The very last fill will not have had its cross-words checked by a subsequent call to DoConfig, so check all words.
+	// TODO: this is inelegant.
+	bool all_words_good = true;
+	for(const auto& word : search_state.puzzle_.AllWords()) {
+	  // Check that it's valid, either by virtue of being a user word, or in the dictionary
+	  if(std::find(user_words.begin(), user_words.end(), word) != user_words.end()) continue;
+	  if(word_finder->LazyNumberOfMatches(1, word) > 0) continue;
+	  all_words_good = false;
+	  break;
+	}
+	if(all_words_good) return search_state.puzzle_.Data();
+	// Some word was not good, which is the same case as IMPOSSIBLE.
+	search_state.result_ = DoConfigResult::IMPOSSIBLE;
+      }
       // Before we push the next search, push on this one.
     }
     if(search_state.which_ + 1 < search_state.matches_.size()) {
