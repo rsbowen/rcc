@@ -15,7 +15,7 @@ int* Coord(Direction direction, std::pair<int, int>* coords) {
 // TODO: sanity check size
 Puzzle::Puzzle(const string& puzzle, int puzzle_size) : puzzle_size_(puzzle_size), data_(puzzle) {}
 
-char Puzzle::At(std::pair<int, int> coords) {
+char Puzzle::At(std::pair<int, int> coords) const {
   // TODO: sanity check size
   return data_[coords.first*puzzle_size_ + coords.second];
 }
@@ -24,7 +24,7 @@ void Puzzle::Set(std::pair<int, int> coords, char c) {
   data_[coords.first*puzzle_size_ + coords.second] = c;
 }
 
-std::pair<int, int> Puzzle::WordStart(std::pair<int, int> coords, Direction direction) {
+std::pair<int, int> Puzzle::WordStart(std::pair<int, int> coords, Direction direction) const {
   while( *Coord(direction, &coords) > 0 && At(coords) != '#' ) {
    (*Coord(direction, &coords))--;
   }
@@ -34,7 +34,7 @@ std::pair<int, int> Puzzle::WordStart(std::pair<int, int> coords, Direction dire
   return coords;
 }
 
-std::string Puzzle::WordAt(std::pair<int, int> coords, Direction direction) {
+std::string Puzzle::WordAt(std::pair<int, int> coords, Direction direction) const {
   string out = "";
   out.reserve(puzzle_size_);
   while( *Coord(direction, &coords) < puzzle_size_ && At(coords) != '#'){
@@ -44,7 +44,7 @@ std::string Puzzle::WordAt(std::pair<int, int> coords, Direction direction) {
   return out;
 }
 
-std::string Puzzle::PrettyString() {
+std::string Puzzle::PrettyString() const {
   std::string output;
   output.reserve(1+puzzle_size_*(puzzle_size_+1));
 
@@ -65,9 +65,9 @@ void Puzzle::SetWord(std::pair<int, int> coords, Direction direction, string wor
   }
 }
   
-int Puzzle::Size() {return puzzle_size_;}
+int Puzzle::Size() const {return puzzle_size_;}
 
-std::vector<std::string> Puzzle::AllWords() {
+std::vector<std::string> Puzzle::AllWords() const {
   std::vector<std::string> all_words;
   for(int i = 0; i < puzzle_size_; ++i) {
     for(int j = 0; j < puzzle_size_; ++j) {
@@ -80,4 +80,4 @@ std::vector<std::string> Puzzle::AllWords() {
   return all_words;
 }
 
-string Puzzle::Data() {return data_;}
+string Puzzle::Data() const {return data_;}
