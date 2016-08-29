@@ -10,7 +10,7 @@ all: trie.o word_finder.o puzzle.o fill.o trie_test word_finder_test
 trie.o: trie.cc trie.h
 	$(CC) $(COMPILE_FLAGS) trie.cc -o trie.o
 
-word_finder.o: word_finder.cc word_finder.h trie.o
+word_finder.o: word_finder.cc word_finder.h
 	$(CC) $(COMPILE_FLAGS) word_finder.cc -o word_finder.o
 
 fill.o: fill.cc fill.h
