@@ -3,8 +3,34 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 enum class Direction {ACROSS, DOWN};
+
+// TODO: make all the functions in Puzzle take this.
+// TODO: this name sucks
+struct Word {
+  Word(const std::pair<int, int>& coords, const Direction& direction) : coords_(coords), direction_(direction) {}
+  std::pair<int, int> coords_;
+  Direction direction_;
+};
+bool operator==(const Word& lhs, const Word& rhs);
+bool operator!=(const Word& lhs, const Word& rhs);
+
+// TODO: maybe these live in a cc file
+namespace std {
+template <> struct hash<Word> {
+  typedef Word argument_type;
+  typedef std::size_t result_type;
+  // TODO: maybe this hash function sucks. maybe find a hash combine function somewhere. boost?
+  size_t operator() (const Word& word) const {
+    return std::hash<std::string>()(std::to_string(word.coords_.first)+"x"+std::to_string(word.coords_.second)+"x"+std::to_string(static_cast<int>(word.direction_)));
+  }
+};
+} //namespace std
+
+// Adjacency Lists
+using PuzzleGraph = std::unordered_map<Word, std::vector<Word>>; 
 
 class Puzzle {
  public:
@@ -20,6 +46,8 @@ class Puzzle {
   std::vector<std::string> AllWords() const;
   std::string Data() const;
   std::string PrettyString() const;
+  // Vertices are just not-yet-complete words. Edges are whether they meet.
+  PuzzleGraph AsGraph() const;
   
  private:
   int puzzle_size_;

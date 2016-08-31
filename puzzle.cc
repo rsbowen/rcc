@@ -4,6 +4,11 @@
 
 using std::string;
 
+bool operator==(const Word& lhs, const Word& rhs) {
+  return lhs.coords_.first == rhs.coords_.first && lhs.coords_.second == rhs.coords_.second && lhs.direction_ == rhs.direction_;
+}
+bool operator!=(const Word& lhs, const Word& rhs) { return !(lhs==rhs);}
+
 int* Coord(Direction direction, std::pair<int, int>* coords) {
   if(direction == Direction::DOWN)
   {
@@ -79,5 +84,33 @@ std::vector<std::string> Puzzle::AllWords() const {
   }
   return all_words;
 }
+
+PuzzleGraph Puzzle::AsGraph() const {
+  PuzzleGraph graph;
+  for(int i = 0; i<puzzle_size_; ++i) {
+    for(int j = 0; j<puzzle_size_; ++j) {
+      for(const Direction& direction : {Direction::DOWN, Direction::ACROSS}) {
+        // TODO: this is not the clearest code ever written.
+        Word coord_and_direction({{i,j}, direction});
+        if(WordStart({i,j}, direction) != std::pair<int, int>(i,j)) continue;
+	const string word = WordAt({i,j}, direction);
+	if(word.find(" ") == std::string::npos) continue;
+        const Direction other_direction = (direction==Direction::DOWN ? Direction::ACROSS : Direction::DOWN);
+	std::pair<int, int> coords(i,j);
+	std::vector<Word> neighbors;
+	for(const char c : word) {
+	  const string crossword = WordAt(coords, other_direction);
+	  if(crossword.find(" ") != std::string::npos) {
+	    neighbors.push_back({WordStart(coords, other_direction), other_direction});
+	  }
+	  (*Coord(direction, &coords))++;
+	}
+	graph[coord_and_direction] = neighbors;
+      }
+    }
+  }
+  return graph;
+}
+
 
 string Puzzle::Data() const {return data_;}

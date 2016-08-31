@@ -60,5 +60,36 @@ int main(int argc, char* argv[]) {
     if(all_words[i] != expected_all_words[i]) std::cout << "i is " << i << "all_words[i] is " << all_words[i] << " but expected_all_words[i] is " << expected_all_words[i];
   }
 
+  // Test As Graph: 3x3 donut like this
+  //   a   
+  // b # c
+  //   d  
+
+  Puzzle graph_puzzle(" a b#c d ", 3);
+  PuzzleGraph graph = graph_puzzle.AsGraph();
+
+
+  // TODO: this makes assumptions about the order, which is an implementation detail. fix with real testing framework that can do unordered container content compares or something.
+  bool good_graph = true;
+  if(graph.size() != 4) good_graph = false;
+  Word one_across({0,0}, Direction::ACROSS);
+  Word one_down({0,0}, Direction::DOWN);
+  Word two_down({0,2}, Direction::DOWN);
+  Word three_across({2,0}, Direction::ACROSS);
+  if(graph[one_across].size() != 2 || graph[one_down].size() != 2 || graph[two_down].size() != 2 || graph [three_across].size() != 2) {
+    good_graph = false;
+  }
+
+  if(good_graph && graph[one_across][0] != one_down) good_graph = false;
+  if(good_graph && graph[one_across][1] != two_down) good_graph = false;
+  if(good_graph && graph[one_down][0] != one_across) good_graph = false;
+  if(good_graph && graph[one_down][1] != three_across) good_graph = false;
+  if(good_graph && graph[two_down][0] != one_across) good_graph = false;
+  if(good_graph && graph[two_down][1] != three_across) good_graph = false;
+  if(good_graph && graph[three_across][0] != one_down) good_graph = false;
+  if(good_graph && graph[three_across][1] != two_down) good_graph = false;
+
+  if(!good_graph) { std::cout << "Bad graph!" << std::endl;}
+
   return 0;
 }
