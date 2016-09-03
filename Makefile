@@ -19,6 +19,9 @@ fill.o: fill.cc fill.h
 puzzle.o: puzzle.cc puzzle.h
 	$(CC) $(COMPILE_FLAGS) puzzle.cc
 
+graph.o: graph.cc graph.h puzzle.o
+	$(CC) $(COMPILE_FLAGS) graph.cc
+
 #TODO: I think by using the right compiler instead of g++, we can use object files here instead of compiling every time.
 fill.js: bindings.cc word_finder.cc puzzle.cc fill.cc
 	emcc --bind -o fill.js bindings.cc word_finder.cc puzzle.cc fill.cc
@@ -42,6 +45,9 @@ puzzle_test: puzzle.o puzzle_test.cc
 
 perf_test : perf_test.cc puzzle.o word_finder.o fill.o
 	$(CC) $(LINK_FLAGS) perf_test.cc puzzle.o word_finder.o fill.o -o perf_test
+
+graph_test: graph_test.cc graph.o puzzle.o
+	$(CC) $(LINK_FLAGS) graph_test.cc puzzle.o graph.o -o graph_test
 
 clean:
 	rm *.o trie_test word_finder_test fill_test puzzle_test fill.js perf_test fill_generative_test
