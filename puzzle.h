@@ -12,6 +12,7 @@ enum class Direction {ACROSS, DOWN};
 // TODO: make sure consistent throughout codebase whether using 'coord' or 'coords'
 struct Word {
   Word(const std::pair<int, int>& coords, const Direction& direction) : coords_(coords), direction_(direction) {}
+  Word() : coords_(-1, -1), direction_(Direction::DOWN) {}
   std::pair<int, int> coords_;
   Direction direction_;
 };
@@ -57,6 +58,7 @@ class Puzzle {
 
 
 // Not quite a standard c++ iterator because a crossword isn't quite a collection of Words (though that would be cool)
+// TODO: convert all iterations over all words in the codebase to using this.
 class PuzzleIterator {
  public:
   PuzzleIterator(Puzzle& puzzle);
