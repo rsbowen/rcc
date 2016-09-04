@@ -9,6 +9,7 @@ enum class Direction {ACROSS, DOWN};
 
 // TODO: make all the functions in Puzzle take this.
 // TODO: this name sucks
+// TODO: make sure consistent throughout codebase whether using 'coord' or 'coords'
 struct Word {
   Word(const std::pair<int, int>& coords, const Direction& direction) : coords_(coords), direction_(direction) {}
   std::pair<int, int> coords_;
@@ -52,6 +53,23 @@ class Puzzle {
  private:
   int puzzle_size_;
   std::string data_;
+};
+
+
+// Not quite a standard c++ iterator because a crossword isn't quite a collection of Words (though that would be cool)
+class PuzzleIterator {
+ public:
+  PuzzleIterator(Puzzle& puzzle);
+  Word Get();
+  bool Valid();
+  void Increment();
+
+ private:
+  void IncrementOnce();
+
+  Puzzle& puzzle_;
+  std::pair<int, int> coord_;
+  Direction direction_;
 };
 
 #endif

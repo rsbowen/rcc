@@ -112,5 +112,41 @@ PuzzleGraph Puzzle::AsGraph() const {
   return graph;
 }
 
-
 string Puzzle::Data() const {return data_;}
+
+PuzzleIterator::PuzzleIterator(Puzzle& puzzle) : puzzle_(puzzle), coord_({-1,0}), direction_(Direction::DOWN) {
+  IncrementOnce();
+}
+
+Word PuzzleIterator::Get() {
+  return {coord_, direction_};
+}
+
+bool PuzzleIterator::Valid() {
+  return coord_.first != -1;
+}
+
+void PuzzleIterator::Increment() {
+  do {
+    IncrementOnce();
+  } while (coord_.first != -1 && puzzle_.WordStart(coord_, direction_) != coord_);
+}
+
+void PuzzleIterator::IncrementOnce() {
+  if(direction_ == Direction::ACROSS) {
+    direction_ = Direction::DOWN;
+    return;
+  }
+  direction_ = Direction::ACROSS;
+  if(coord_.first + 1 < puzzle_.Size()) {
+    ++coord_.first;
+    return;
+  }
+  if(coord_.second + 1 < puzzle_.Size()) {
+    ++coord_.second;
+    coord_.first = 0;
+    return;
+  }
+  coord_.first = -1;
+  coord_.second = -1;
+}

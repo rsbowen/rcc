@@ -91,5 +91,19 @@ int main(int argc, char* argv[]) {
 
   if(!good_graph) { std::cout << "Bad graph!" << std::endl;}
 
+  Puzzle it_puzzle("ab#c#defg", 3);
+  auto iter = PuzzleIterator(it_puzzle);
+  std::vector<std::string> words_from_iterator;
+  for(auto iter = PuzzleIterator(it_puzzle); iter.Valid(); iter.Increment()){
+    Word location = iter.Get();
+    words_from_iterator.push_back(it_puzzle.WordAt(location.coords_, location.direction_));
+  }
+  std::sort(words_from_iterator.begin(), words_from_iterator.end());
+  if(words_from_iterator.size() != 8) { std::cout << "Bad # of words from iterator: " << words_from_iterator.size() << std::endl; return 1;};
+  std::vector<std::string> words_expected = {"ab", "ace", "b", "c", "d", "dg", "efg", "f"};
+  for(int i = 0; i < 8; ++i) {
+    if(words_expected[i] != words_from_iterator[i]) {std::cout << "mismatch, got " << words_from_iterator[i] << " wanted " << words_expected[i] << std::endl;};
+  }
+
   return 0;
 }
