@@ -36,5 +36,6 @@ int main(int argc, char* argv[]) {
   components_as_string.push_back(',');
   }
   if(components_as_string != "0,12,345,") std::cout << "bad components string " << components_as_string;
+
   return 0;
 }

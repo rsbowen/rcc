@@ -48,6 +48,7 @@ std::vector<std::unordered_set<Word>> FillOrder(Puzzle puzzle) {
       }
     }
     if(min_size <= 6) {
+      // TODO: this can cause some extra work because it may fill in words that are already filled in (the last word in the cc, for example, is probably filled in by cross-words by the time we get to it); fill.cc will notice though
       for(const auto& word : connected_components[index]) {
         // TODO: make puzzle take Word arguments
         std::string word_already = puzzle.WordAt(word.coords_, word.direction_);
