@@ -22,8 +22,7 @@ int main(int argc, char* argv[]) {
 
   // Test the Set function
   puzzle.Set({1,2}, 'q');
-  if(puzzle.At({1,2}) != 'q') std::cout << "Set((1,2))" << std::endl;
-
+  if(puzzle.At({1,2}) != 'q') std::cout << "Set((1,2))" << std::endl; 
   // Test the WordStart function
   // Puzzle is
   // a b c d
@@ -60,12 +59,13 @@ int main(int argc, char* argv[]) {
     if(all_words[i] != expected_all_words[i]) std::cout << "i is " << i << "all_words[i] is " << all_words[i] << " but expected_all_words[i] is " << expected_all_words[i];
   }
 
-  // Test As Graph: 3x3 donut like this
-  //   a   
-  // b # c
-  //   d  
+  // Test As Graph: 3x3 donut with things on the side like this
+  //   a   x
+  // b # c x
+  //   d   x
+  // x x x x
 
-  Puzzle graph_puzzle(" a b#c d ", 3);
+  Puzzle graph_puzzle(" a xb#cx d xxxxx", 4);
   PuzzleGraph graph = graph_puzzle.AsGraph();
 
 

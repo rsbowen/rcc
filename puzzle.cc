@@ -1,6 +1,4 @@
 #include "puzzle.h"
-// tmp
-#include <iostream>
 
 using std::string;
 
@@ -8,6 +6,11 @@ bool operator==(const Word& lhs, const Word& rhs) {
   return lhs.coords_.first == rhs.coords_.first && lhs.coords_.second == rhs.coords_.second && lhs.direction_ == rhs.direction_;
 }
 bool operator!=(const Word& lhs, const Word& rhs) { return !(lhs==rhs);}
+
+std::ostream& operator<<(std::ostream& stream, const Word& obj) {
+  stream << "(" << obj.coords_.first << "," << obj.coords_.second << "," << (obj.direction_ == Direction::DOWN ? "down)" : "across)");
+  return stream;
+}
 
 int* Coord(Direction direction, std::pair<int, int>* coords) {
   if(direction == Direction::DOWN)

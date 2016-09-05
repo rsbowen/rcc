@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 #include <unordered_map>
 
 enum class Direction {ACROSS, DOWN};
@@ -12,12 +13,22 @@ enum class Direction {ACROSS, DOWN};
 // TODO: make sure consistent throughout codebase whether using 'coord' or 'coords'
 struct Word {
   Word(const std::pair<int, int>& coords, const Direction& direction) : coords_(coords), direction_(direction) {}
+  Word(int row, int col, const Direction& direction) : coords_({row, col}), direction_(direction) {}
   Word() : coords_(-1, -1), direction_(Direction::DOWN) {}
+  friend bool operator<(const Word& l, const Word& r) {
+    if(l.coords_.first < r.coords_.first) return true;
+    if(l.coords_.first > r.coords_.first) return false;
+    if(l.coords_.second < r.coords_.second) return true;
+    if(l.coords_.second > r.coords_.second) return false;
+    if(l.direction_ == Direction::ACROSS && r.direction_ == Direction::DOWN) return true;
+    return false;
+}
   std::pair<int, int> coords_;
   Direction direction_;
 };
 bool operator==(const Word& lhs, const Word& rhs);
 bool operator!=(const Word& lhs, const Word& rhs);
+std::ostream& operator<<(std::ostream& stream, const Word& obj);
 
 // TODO: maybe these live in a cc file
 namespace std {
@@ -64,6 +75,7 @@ class PuzzleIterator {
   PuzzleIterator(Puzzle& puzzle);
   Word Get();
   bool Valid();
+  // TODO: make sure this matches sort order.
   void Increment();
 
  private:
