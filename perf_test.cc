@@ -15,7 +15,7 @@ void RealWorldTest(const VectorWordFinder& finder) {
   std::cout << "Puzzle is " << puzzle.PrettyString();
 
   // Betcha this is real slow :)
-  std::cout << "solution '" << Fill(puzzle, &finder) << "'" << std::endl;
+  std::cout << "solution " << Puzzle(Fill(puzzle, &finder), 13).PrettyString() << std::endl;
 }
 
 void NXNTest(const VectorWordFinder& finder, const int side_length) {
