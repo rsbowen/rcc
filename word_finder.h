@@ -11,6 +11,9 @@ class WordFinder {
 
   // Return a vector of all matches.
   virtual void FillMatches(std::vector<std::string>* matches, const std::string& pattern) const = 0;
+
+  // Check a particular word.
+  virtual bool LookUp (const std::string& word) const = 0; 
 };
 
 // Backed by a set of vectors.
@@ -19,6 +22,7 @@ class VectorWordFinder : public WordFinder {
   VectorWordFinder(const std::vector<std::string>& dictionary); 
   int LazyNumberOfMatches(int k, const std::string& pattern) const override;
   void FillMatches(std::vector<std::string>* matches, const std::string& pattern) const override;
+  bool LookUp (const std::string& word) const override; 
  private:
   std::vector<std::vector<std::string>> dictionaries_;
 };

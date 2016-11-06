@@ -18,6 +18,9 @@ int main(int argc, char* argv[]) {
   vwf.FillMatches(&things, "b   ");
   if(things.size() != 2) std::cout << "things problem";
 
+  if(!vwf.LookUp("alpha")) std::cout << "doesn't lookup alpha";
+  if(!vwf.LookUp("delta")) std::cout << "lookups delta";
+
   std::cout << "Done testing.";
 
   return 0;

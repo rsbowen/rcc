@@ -46,3 +46,12 @@ void VectorWordFinder::FillMatches(vector<string>* matches, const string& patter
   }
 }
 
+bool VectorWordFinder::LookUp(const std::string& word) const {
+  // TODO: This could be faster.
+  if(word.size() >= dictionaries_.size()) return false;
+  for(const string& dictionary_word : dictionaries_[word.size()]) {
+    if(dictionary_word == word) return true;
+  }
+  return false;
+}
+
