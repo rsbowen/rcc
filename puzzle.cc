@@ -61,10 +61,12 @@ int Puzzle::BlanksInWordAt(std::pair<int, int> coords, Direction direction) cons
   return total;
 }
 
-std::vector<std::string> Puzzle::Matches(std::pair<int, int> coords, Direction direction, const WordFinder* word_finder) {
+std::vector<std::string> Puzzle::Matches(std::pair<int, int> coords, Direction direction, const WordFinder* word_finder, const WordFinder* user_word_finder) {
   const string pattern = WordAt(coords, direction);
-  std::vector<std::string> matches;
+  std::vector<std::string> matches, user_matches;
   word_finder->FillMatches(&matches, pattern);
+  user_word_finder->FillMatches(&user_matches, pattern);
+  std::copy(user_matches.begin(), user_matches.end(), std::back_inserter(matches));
   std::vector<std::string> filtered_matches;
   for(const string& match : matches) {
     SetWord(coords, direction, match);
@@ -76,7 +78,7 @@ std::vector<std::string> Puzzle::Matches(std::pair<int, int> coords, Direction d
       //skip this check if the cross word is size 1.
       const string cross_pattern = WordAt(cross_word_start_coords, cross_direction);
       if(cross_pattern.size() == 1) continue;
-      if(word_finder->LazyNumberOfMatches(1, cross_pattern) == 0) {
+      if(user_word_finder->LazyNumberOfMatches(1, cross_pattern) == 0 && word_finder->LazyNumberOfMatches(1, cross_pattern) == 0) {
         this_match_ok = false;
 	break;
       }

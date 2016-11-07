@@ -72,16 +72,20 @@ int main(int argc, char* argv[]) {
   // * singleton:empty, expect abc, def
   // * singleton:a, expect abc
   // * singleton:g, expect nothing
-  VectorWordFinder vwf({"abc","def","xxx","ab","bb","be","a","g"});
+
+  // Some of the words are put into the "user" vector word finder
+  VectorWordFinder vwf({"abc","xxx","bb","be","a","g"});
+  VectorWordFinder uvwf({"def", "ab", "g"});
   Puzzle matches_puzzle_1("# #   ###", 3);
   Puzzle matches_puzzle_2("#a#   ###", 3);
   Puzzle matches_puzzle_3("#g#   ###", 3);
   Word word({1,0}, Direction::ACROSS);
-  std::vector<std::string> matches_1 = matches_puzzle_1.Matches(word.coords_, word.direction_, &vwf);
-  std::vector<std::string> matches_2 = matches_puzzle_2.Matches(word.coords_, word.direction_, &vwf);
-  std::vector<std::string> matches_3 = matches_puzzle_3.Matches(word.coords_, word.direction_, &vwf);
+  const auto matches_1 = matches_puzzle_1.Matches(word.coords_, word.direction_, &vwf, &uvwf);
+  const auto matches_2 = matches_puzzle_2.Matches(word.coords_, word.direction_, &vwf, &uvwf);
+  const auto matches_3 = matches_puzzle_3.Matches(word.coords_, word.direction_, &vwf, &uvwf);
   if(matches_1.size() != 2) {
-    std::cout << "matches_1 has bad size " << matches_1.size();
+    std::cout << "matches_1 has bad size " << matches_1.size() << std::endl;
+    for(const auto& match : matches_1) std::cout << match << std::endl;
   } else if(!((matches_1[0] == "abc" && matches_1[1] == "def") || (matches_1[0]=="def" && matches_1[1] == "abc"))) {
       std::cout << "matches_1 has right size but bad elements " << matches_1[0] << "," << matches_1[1];
   }

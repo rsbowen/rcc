@@ -58,7 +58,7 @@ class Puzzle {
   std::string WordAt(std::pair<int, int> coords, Direction direction) const;
   int BlanksInWordAt(std::pair<int, int> coords, Direction direction) const;
   void SetWord(std::pair<int, int> coords, Direction direction, std::string word);
-  std::vector<std::string> Matches(std::pair<int, int> coords, Direction direction, const WordFinder* word_finder);
+  std::vector<std::string> Matches(std::pair<int, int> coords, Direction direction, const WordFinder* word_finder, const WordFinder* user_word_finder);
   int Size() const;
   std::vector<std::string> AllWords() const;
   std::string Data() const;
