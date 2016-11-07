@@ -9,7 +9,7 @@ class WordFinder {
   // If the number of matches to the pattern is less than k, return the number of matches. Otherwise, return k.
   virtual int LazyNumberOfMatches(int k, const std::string& pattern) const = 0;
 
-  // Return a vector of all matches.
+  // Return a vector of all matches. TODO: swap argument order.
   virtual void FillMatches(std::vector<std::string>* matches, const std::string& pattern) const = 0;
 
   // Check a particular word.
