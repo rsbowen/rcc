@@ -27,9 +27,9 @@ int main(int argc, char* argv[]) {
   // Puzzle is
   // a b c d
   // e # f g 
-  // h i j k
-  // l m n o
-  Puzzle puzzle2("abcde#fghijklmno", 4);
+  // h   j k
+  // l   n o
+  Puzzle puzzle2("abcde#fgh jkl no", 4);
   if(puzzle2.WordStart({0,0}, Direction::DOWN) != std::pair<int, int>({0,0})) std::cout << "WordStart(0,0)" << std::endl;
   if(puzzle2.WordStart({1,0}, Direction::DOWN) != std::pair<int, int>({0,0})) std::cout << "WordStart(1,0)" << std::endl;
   if(puzzle2.WordStart({1,3}, Direction::ACROSS) != std::pair<int, int>({1,2})) std::cout << "WordStart(1,3)" << std::endl;
@@ -38,7 +38,11 @@ int main(int argc, char* argv[]) {
   if(puzzle2.WordAt({0,0}, Direction::ACROSS) != "abcd") std::cout << "WordAt(0,0,across)" << std::endl;
   if(puzzle2.WordAt({0,0}, Direction::DOWN) != "aehl") std::cout << "WordAt(0,0,down)" << std::endl;
   if(puzzle2.WordAt({1,2}, Direction::ACROSS) != "fg") std::cout << "WordAt(1,2,across)" << std::endl;
-  if(puzzle2.WordAt({2,1}, Direction::DOWN) != "im") std::cout << "WordAt(2,1,down)" << std::endl;
+  if(puzzle2.WordAt({2,1}, Direction::DOWN) != "  ") std::cout << "WordAt(2,1,down)" << std::endl;
+
+  if(puzzle2.BlanksInWordAt({0,0}, Direction::ACROSS) != 0) std::cout << "BIWA(0,0,across)" << std::endl;
+  if(puzzle2.BlanksInWordAt({2,0}, Direction::ACROSS) != 1) std::cout << "BIWA(2,0,across)" << std::endl;
+  if(puzzle2.BlanksInWordAt({2,1}, Direction::DOWN) != 2) std::cout << "BIWA(2,1,across)" << std::endl;
 
   // Test WordAt with spaces.
   Puzzle puzzle3("a  c", 2);
@@ -57,6 +61,39 @@ int main(int argc, char* argv[]) {
   if(all_words.size() != expected_all_words.size()) std::cout << "all_words size wrong";
   for(int i = 0; i<all_words.size(); ++i) {
     if(all_words[i] != expected_all_words[i]) std::cout << "i is " << i << "all_words[i] is " << all_words[i] << " but expected_all_words[i] is " << expected_all_words[i];
+  }
+
+  // Test Puzzle::Matches with a 3x3 puzzle:
+  // # ? #
+  // ? ? ? 
+  // # # #
+  // And the dictionary: [abc, def, xxx, ab, bb, be, a, g]
+  // Vary the singleton letter at the top and query the triple-long one
+  // * singleton:empty, expect abc, def
+  // * singleton:a, expect abc
+  // * singleton:g, expect nothing
+  VectorWordFinder vwf({"abc","def","xxx","ab","bb","be","a","g"});
+  Puzzle matches_puzzle_1("# #   ###", 3);
+  Puzzle matches_puzzle_2("#a#   ###", 3);
+  Puzzle matches_puzzle_3("#g#   ###", 3);
+  Word word({1,0}, Direction::ACROSS);
+  std::vector<std::string> matches_1 = matches_puzzle_1.Matches(word.coords_, word.direction_, &vwf);
+  std::vector<std::string> matches_2 = matches_puzzle_2.Matches(word.coords_, word.direction_, &vwf);
+  std::vector<std::string> matches_3 = matches_puzzle_3.Matches(word.coords_, word.direction_, &vwf);
+  if(matches_1.size() != 2) {
+    std::cout << "matches_1 has bad size " << matches_1.size();
+  } else if(!((matches_1[0] == "abc" && matches_1[1] == "def") || (matches_1[0]=="def" && matches_1[1] == "abc"))) {
+      std::cout << "matches_1 has right size but bad elements " << matches_1[0] << "," << matches_1[1];
+  }
+
+  if (matches_2.size() != 1) {
+    std::cout << "matches_2 has bad size " << matches_2.size();
+  } else if (matches_2[0] != "abc") {
+    std::cout << "matches_2 has bad element " << matches_2[0];
+  }
+
+  if (matches_3.size() != 0) {
+    std::cout << "matches_3 has bad size " << matches_3.size();
   }
 
   // Test As Graph: 3x3 donut with things on the side like this

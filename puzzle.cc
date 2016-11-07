@@ -52,6 +52,42 @@ std::string Puzzle::WordAt(std::pair<int, int> coords, Direction direction) cons
   return out;
 }
 
+int Puzzle::BlanksInWordAt(std::pair<int, int> coords, Direction direction) const {
+  int total = 0;
+  while(*Coord(direction, &coords) < puzzle_size_ && At(coords) != '#'){
+    if(At(coords) == ' ') ++total;
+    (*Coord(direction, &coords))++;
+  }
+  return total;
+}
+
+std::vector<std::string> Puzzle::Matches(std::pair<int, int> coords, Direction direction, const WordFinder* word_finder) {
+  const string pattern = WordAt(coords, direction);
+  std::vector<std::string> matches;
+  word_finder->FillMatches(&matches, pattern);
+  std::vector<std::string> filtered_matches;
+  for(const string& match : matches) {
+    SetWord(coords, direction, match);
+    auto coords_in_word = coords;
+    auto cross_direction = (direction==Direction::ACROSS?Direction::DOWN:Direction::ACROSS);
+    bool this_match_ok = true;
+    for(;*Coord(direction, &coords_in_word) < puzzle_size_ && At(coords_in_word) != '#'; (*Coord(direction, &coords_in_word))++){
+      auto cross_word_start_coords = WordStart(coords_in_word, cross_direction);
+      //skip this check if the cross word is size 1.
+      const string cross_pattern = WordAt(cross_word_start_coords, cross_direction);
+      if(cross_pattern.size() == 1) continue;
+      if(word_finder->LazyNumberOfMatches(1, cross_pattern) == 0) {
+        this_match_ok = false;
+	break;
+      }
+    }
+    if(this_match_ok) filtered_matches.push_back(match);
+  }
+  // Restore puzzle to before-for-loop state.
+  SetWord(coords, direction, pattern);
+  return filtered_matches;
+}
+
 std::string Puzzle::PrettyString() const {
   std::string output;
   output.reserve(1+puzzle_size_*(puzzle_size_+1));

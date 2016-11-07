@@ -6,6 +6,8 @@
 #include <iostream>
 #include <unordered_map>
 
+#include "word_finder.h"
+
 enum class Direction {ACROSS, DOWN};
 
 // TODO: make all the functions in Puzzle take this.
@@ -54,7 +56,9 @@ class Puzzle {
   void Set(std::pair<int, int> coords, char c);
   std::pair<int, int> WordStart(std::pair<int, int> coords, Direction direction) const;
   std::string WordAt(std::pair<int, int> coords, Direction direction) const;
+  int BlanksInWordAt(std::pair<int, int> coords, Direction direction) const;
   void SetWord(std::pair<int, int> coords, Direction direction, std::string word);
+  std::vector<std::string> Matches(std::pair<int, int> coords, Direction direction, const WordFinder* word_finder);
   int Size() const;
   std::vector<std::string> AllWords() const;
   std::string Data() const;
