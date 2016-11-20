@@ -7,6 +7,7 @@ using std::string;
 using std::vector;
 
 int main(int argc, char* argv[]) {
+/*
   // Simplest DoConfig test: only one thing left to fill.
   // as  
   //  #
@@ -22,6 +23,7 @@ int main(int argc, char* argv[]) {
   if(direction != Direction::DOWN) std::cout << " direction was " << (direction == Direction::DOWN? "Down":"Across") << std::endl;
   if(is_done) std::cout << "is_done was true" << std::endl;
   if(matches.size() != 1 || matches[0] != "as") std::cout << "matches was wrong" << std::endl;
+  */
 
   Puzzle puzzle("a   ", 2);
   // Extremely simple fill: 2x2 like this
@@ -53,7 +55,7 @@ int main(int argc, char* argv[]) {
   Puzzle final_fill_cross_puzzle("abc ", 2);
   VectorWordFinder final_fill_cross_word_finder({"ab", "ac", "cx", "by", "bz"});
   filled = Fill(final_fill_cross_puzzle, &final_fill_cross_word_finder);
-  if(filled.size() != 0) { std::cout << "Final-fill-cross test failed, producing the fill " << filled << std::endl;}
+  if(filled.size() != 0) { std::cout << "Final-fill-cross test failed, producing the fill '" << filled << "'" << std::endl;}
 
   // Check that, if some initial word is not in the dictionary, it's still okay.
   // A B
