@@ -36,6 +36,8 @@ std::vector<std::vector<Word>> ConnectedComponents(const PuzzleGraph& graph) {
 // TODO: break this into 3 functions which can be tested individually
 std::vector<std::unordered_set<Word>> FillOrder(Puzzle puzzle) {
   std::vector<std::unordered_set<Word>> fill_order;
+  // Fill each component with a single letter to make it easier to read as a human. This variable controls which to use next.
+  int alphabet_offset = 0;
   for(PuzzleGraph graph = puzzle.AsGraph(); !graph.empty(); graph=puzzle.AsGraph()) {
     std::unordered_set<Word> word_set;
     fill_order.emplace_back();
@@ -52,7 +54,8 @@ std::vector<std::unordered_set<Word>> FillOrder(Puzzle puzzle) {
       for(const auto& word : connected_components[index]) {
         // TODO: make puzzle take Word arguments
         std::string word_already = puzzle.WordAt(word.coords_, word.direction_);
-	for(char& c : word_already) c='x';
+	for(char& c : word_already) c=(char)('a'+(alphabet_offset%26));
+	++alphabet_offset;
 	puzzle.SetWord(word.coords_, word.direction_, word_already);
 	fill_order.back().insert(word);
       }
@@ -70,7 +73,8 @@ std::vector<std::unordered_set<Word>> FillOrder(Puzzle puzzle) {
       Word word = iter.Get();
       std::string word_already = sub_puzzle.WordAt(word.coords_, word.direction_);
       if(std::find(word_already.begin(), word_already.end(), ' ') == word_already.end()) continue;
-      for(char& c : word_already) c='x';
+      for(char& c : word_already) c= ('a'+(alphabet_offset%26));
+      ++alphabet_offset;
       sub_puzzle.SetWord(word.coords_, word.direction_, word_already);
       auto new_connected_components = ConnectedComponents(sub_puzzle.AsGraph());
       if(new_connected_components.size() > max_num_connected_components) {
@@ -85,7 +89,8 @@ std::vector<std::unordered_set<Word>> FillOrder(Puzzle puzzle) {
     }
     if(max_num_connected_components > connected_components.size()) {
       std::string word_already = puzzle.WordAt(location.coords_, location.direction_);
-      for(char& c : word_already) c='x';
+      for(char& c : word_already) c=('a'+(alphabet_offset%26));
+      ++alphabet_offset;
       puzzle.SetWord(location.coords_, location.direction_, word_already);
       fill_order.back().insert(location);
       continue;
@@ -101,10 +106,13 @@ std::vector<std::unordered_set<Word>> FillOrder(Puzzle puzzle) {
       }
     }
     std::string word_already = puzzle.WordAt(location.coords_, location.direction_);
-    for(char& c : word_already) c='x';
+    for(char& c : word_already) c='a'+(alphabet_offset % 26);
+    ++alphabet_offset;
     puzzle.SetWord(location.coords_, location.direction_, word_already);
     fill_order.back().insert(location);
   }
+  // Temp. TODO: maybe control this somehow, only print when debug mode or not opt mode or something.
+  std::cout << puzzle.PrettyString();
   return fill_order;
 }
 
