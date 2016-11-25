@@ -3,6 +3,8 @@
 
 #include "puzzle.h"
 #include <unordered_set>
+#include <unordered_map>
+
 // TODO: move puzzlegraph definition here.
 
 std::vector<std::vector<Word>> ConnectedComponents(const PuzzleGraph& graph);
@@ -14,5 +16,8 @@ std::vector<std::vector<Word>> ConnectedComponents(const PuzzleGraph& graph);
 //
 // Output: list (in order) of sets (not in order) of words to be filled.
 std::vector<std::unordered_set<Word>> FillOrder(Puzzle puzzle);
+
+// Helper for components. All the words in the component, as filled in the puzzle, in order.
+std::string DumpComponent(const Puzzle& puzzle, const std::vector<Word> component);
 
 #endif

@@ -107,3 +107,12 @@ std::vector<std::unordered_set<Word>> FillOrder(Puzzle puzzle) {
   }
   return fill_order;
 }
+
+std::string DumpComponent(const Puzzle& puzzle, const std::vector<Word> component) {
+  // TODO: this might be slow in a tight loop; might be good to add up the size of /component/ and pre-allocate x.
+  std::string x;
+  for(const auto& word : component) {
+    x.append(puzzle.WordAt(word.coords_, word.direction_));
+  }
+  return x;
+}
