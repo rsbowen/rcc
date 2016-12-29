@@ -64,7 +64,8 @@ int main(int argc, char* argv[]) {
     }
     std::random_shuffle(dictionary.begin(), dictionary.end());
     TrieWordFinder finder(dictionary);
-    string filled = Fill(incomplete_puzzle, &finder);
+    string big;
+    string filled = Fill(incomplete_puzzle, &finder, &big);
     if(filled == "") {
       std::cout << "generative failed on attempt " << i << " with:" << std::endl << completed_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << " and dictionary " << std::endl;
       for(const auto& word : dictionary) {

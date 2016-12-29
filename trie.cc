@@ -10,6 +10,7 @@ void Upper(char* c) {
   }
 }
 
+
 TrieNode* TrieNode::ChildOrNull(char c) {
   Upper(&c);
   return children[c-'A'].get();
