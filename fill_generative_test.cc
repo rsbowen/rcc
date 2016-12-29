@@ -35,9 +35,10 @@ string RandomlyAddBlanks(const string& completed_puzzle) {
 
 int main(int argc, char* argv[]) {
   srand(time(nullptr));
-  // Constants which control the generative test
-  int test_size = 5;  // Side length of crossword
-  int extra_words_per_pattern = 10;
+  // Constants which control the generative test. TODO: make these command line flags with sane defaults.
+  // TODO: seg fault on test_size of 2 or 3 !!?!!?
+  int test_size = 4;  // Side length of crossword
+  int extra_words_per_pattern = 5;
   int random_attempts = 10000;
   for(int i = 0; i < random_attempts; ++i) {
     // TODO: it might be inefficient to be reallocating the strings every time
@@ -45,9 +46,6 @@ int main(int argc, char* argv[]) {
     Puzzle completed_puzzle(grid, test_size);
     Puzzle incomplete_puzzle(RandomlyAddBlanks(grid), test_size);
     vector<string> dictionary = completed_puzzle.AllWords();
-    for(const auto word : dictionary) {
-    }
-    return 0;
     const vector<string> patterns = incomplete_puzzle.AllWords();
     for(const string& pattern : patterns) {
       // Ensure there are some other words which match this pattern, to cause backtracking. Ignore any patterns with no spaces (TODO: inelegant)
@@ -65,10 +63,10 @@ int main(int argc, char* argv[]) {
       }
     }
     std::random_shuffle(dictionary.begin(), dictionary.end());
-    VectorWordFinder finder(dictionary);
+    TrieWordFinder finder(dictionary);
     string filled = Fill(incomplete_puzzle, &finder);
     if(filled == "") {
-      std::cout << "generative failed with:" << std::endl << completed_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << " and dictionary " << std::endl;
+      std::cout << "generative failed on attempt " << i << " with:" << std::endl << completed_puzzle.PrettyString() << "=" << incomplete_puzzle.PrettyString() << " and dictionary " << std::endl;
       for(const auto& word : dictionary) {
         std::cout << word << std::endl;
       }

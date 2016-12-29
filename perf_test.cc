@@ -10,10 +10,10 @@
 using Clock = std::chrono::high_resolution_clock;
 
 // From a partially-completed crossword
-void RealWorldTest(const VectorWordFinder& finder) {
+void RealWorldTest(WordFinder* finder) {
   Puzzle puzzle("FAB# C   #DAGAIR# A   #OBOALI# K   #YES##D  E  # O  PRESS##   U##  A #TWELFTHS  N#  E  #A    D   D # K    G   ##  E    R #     T##  O#HONOR#H    O#     #IDD  M#     #S  ", 13);
   std::cout << "Puzzle is " << puzzle.PrettyString();
-  const std::string soln = Fill(puzzle, &finder);
+  const std::string soln = Fill(puzzle, finder);
 
   // Betcha this is real slow :)
   if(soln.empty()) {
@@ -23,11 +23,11 @@ void RealWorldTest(const VectorWordFinder& finder) {
   }
 }
 
-void NXNTest(const VectorWordFinder& finder, const int side_length) {
+void NXNTest(const WordFinder* finder, const int side_length) {
   // Empty n-by-n puzzle
   const std::string puzzle_template(side_length*side_length, ' ');
   Puzzle puzzle(puzzle_template, side_length);
-  std::cout << "solution '" << Fill(puzzle, &finder) << "'" << std::endl;
+  std::cout << "solution '" << Fill(puzzle, finder) << "'" << std::endl;
 }
 
 int main(int argc, char* argv[]) {
@@ -45,14 +45,14 @@ int main(int argc, char* argv[]) {
     if(!word.empty()) words.insert(word);
   }
 
-  VectorWordFinder finder({words.begin(), words.end()});
+  TrieWordFinder finder({words.begin(), words.end()});
   std::cout << "done reading" << std::endl;
   const auto time_1 = Clock::now();
-  NXNTest(finder, 4);
+  NXNTest(&finder, 4);
   const auto time_2 = Clock::now();
   std::chrono::duration<double> elapsed_seconds_1 = time_2 - time_1;
   std::cout << "done nxn time(s):" << elapsed_seconds_1.count() << std::endl;
-  RealWorldTest(finder);
+  RealWorldTest(&finder);
   const auto time_3 = Clock::now();
   std::chrono::duration<double> elapsed_seconds_2 = time_3 - time_2;
   std::cout << "done rw time(s):" << elapsed_seconds_2.count() << std::endl;

@@ -1,7 +1,7 @@
 #TODO: dependencies are probably wrong, just make clean/make all
 CC=g++
-COMPILE_FLAGS=--std=c++11 -c -Wall -g
-LINK_FLAGS=--std=c++11 -g
+COMPILE_FLAGS=--std=c++11 -c -Wall -O2
+LINK_FLAGS=--std=c++11 -O2
 
 all: trie.o word_finder.o puzzle.o fill.o trie_test word_finder_test 
 
@@ -38,22 +38,22 @@ word_finder_test: word_finder.o word_finder_test.cc trie.o
 fill_test: word_finder.o puzzle.o fill.o fill_test.cc graph.o
 	$(CC) $(LINK_FLAGS) fill_test.cc fill.o word_finder.o puzzle.o graph.o -o fill_test
 
-fill_generative_test: word_finder.o puzzle.o fill.o graph.o fill_generative_test.cc
-	$(CC) $(LINK_FLAGS) fill_generative_test.cc fill.o word_finder.o puzzle.o graph.o -o fill_generative_test
+fill_generative_test: word_finder.o puzzle.o fill.o graph.o trie.o fill_generative_test.cc
+	$(CC) $(LINK_FLAGS) fill_generative_test.cc fill.o word_finder.o puzzle.o graph.o trie.o -o fill_generative_test
 
 puzzle_test: puzzle.o puzzle_test.cc word_finder.o
 	$(CC) $(LINK_FLAGS) puzzle_test.cc puzzle.o word_finder.o -o puzzle_test
 
-perf_test : perf_test.cc puzzle.o word_finder.o fill.o graph.o
-	$(CC) $(LINK_FLAGS) perf_test.cc puzzle.o word_finder.o fill.o graph.o -o perf_test
+perf_test : perf_test.cc puzzle.o word_finder.o fill.o graph.o trie.o
+	$(CC) $(LINK_FLAGS) perf_test.cc puzzle.o word_finder.o fill.o graph.o trie.o -o perf_test
 
 graph_test: graph_test.cc graph.o puzzle.o
 	$(CC) $(LINK_FLAGS) graph_test.cc puzzle.o graph.o -o graph_test
 
 # Other binaries
 
-fill_cli: fill_cli.cc puzzle.o word_finder.o fill.o graph.o
-	$(CC) $(LINK_FLAGS) fill_cli.cc puzzle.o word_finder.o fill.o graph.o -o fill_cli
+fill_cli: fill_cli.cc puzzle.o word_finder.o fill.o graph.o trie.o
+	$(CC) $(LINK_FLAGS) fill_cli.cc puzzle.o word_finder.o fill.o graph.o trie.o -o fill_cli
 
 clean:
 	rm *.o trie_test word_finder_test fill_test puzzle_test fill.js perf_test fill_generative_test

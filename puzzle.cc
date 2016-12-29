@@ -63,12 +63,15 @@ int Puzzle::BlanksInWordAt(std::pair<int, int> coords, Direction direction) cons
 
 std::vector<std::string> Puzzle::Matches(std::pair<int, int> coords, Direction direction, const WordFinder* word_finder, const WordFinder* user_word_finder) {
   const string pattern = WordAt(coords, direction);
+  //std::cout << "Looking for matches for pattern " << pattern << std::endl;
   std::vector<std::string> matches, user_matches;
   word_finder->FillMatches(&matches, pattern);
   user_word_finder->FillMatches(&user_matches, pattern);
   std::copy(user_matches.begin(), user_matches.end(), std::back_inserter(matches));
   std::vector<std::string> filtered_matches;
+  //std::cout << "There are " << matches.size() << " matches." << std::endl;
   for(const string& match : matches) {
+    //std::cout << "Trying match " << match << ":";
     SetWord(coords, direction, match);
     auto coords_in_word = coords;
     auto cross_direction = (direction==Direction::ACROSS?Direction::DOWN:Direction::ACROSS);
@@ -79,11 +82,15 @@ std::vector<std::string> Puzzle::Matches(std::pair<int, int> coords, Direction d
       const string cross_pattern = WordAt(cross_word_start_coords, cross_direction);
       if(cross_pattern.size() == 1) continue;
       if(user_word_finder->LazyNumberOfMatches(1, cross_pattern) == 0 && word_finder->LazyNumberOfMatches(1, cross_pattern) == 0) {
+        //std::cout << " no matches for cross pattern " << cross_pattern << std::endl;
         this_match_ok = false;
 	break;
       }
     }
-    if(this_match_ok) filtered_matches.push_back(match);
+    if(this_match_ok) {
+      filtered_matches.push_back(match);
+      //std::cout << " ok " << std::endl;
+    }
   }
   // Restore puzzle to before-for-loop state.
   SetWord(coords, direction, pattern);
@@ -128,14 +135,19 @@ std::vector<std::string> Puzzle::AllWords() const {
 
 PuzzleGraph Puzzle::AsGraph() const {
   PuzzleGraph graph;
+  //std::cout << "Running AsGraph on " << std::endl << PrettyString() << std::endl;
   for(int i = 0; i<puzzle_size_; ++i) {
     for(int j = 0; j<puzzle_size_; ++j) {
       for(const Direction& direction : {Direction::DOWN, Direction::ACROSS}) {
         // TODO: this is not the clearest code ever written.
         Word coord_and_direction({{i,j}, direction});
+	//std::cout << " at word " << coord_and_direction << std::endl;
         if(WordStart({i,j}, direction) != std::pair<int, int>(i,j)) continue;
 	const string word = WordAt({i,j}, direction);
-	if(word.find(" ") == std::string::npos) continue;
+	if(word.find(" ") == std::string::npos){
+	  //std::cout << " skipping word '" << word << "' at " << coord_and_direction << " because it contains no blanks" << std::endl;
+	  continue;
+	}
         const Direction other_direction = (direction==Direction::DOWN ? Direction::ACROSS : Direction::DOWN);
 	std::pair<int, int> coords(i,j);
 	std::vector<Word> neighbors;

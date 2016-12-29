@@ -37,5 +37,17 @@ int main(int argc, char* argv[]) {
   }
   if(components_as_string != "0,12,345,") std::cout << "bad components string " << components_as_string;
 
+  Puzzle puzzle("FAB# C   #DAGAIR# A   #OBOALI# K   #YES##D  E  # O  PRESS##   U##  A #TWELFTHS  N#  E  #A    D   D # K    G   ##  E    R #     T##  O#HONOR#H    O#     #IDD  M#     #S  ", 13);
+  std::cout << "Puzzle is " << puzzle.PrettyString();
+  //FillOrder(puzzle);
+
+  Puzzle puzzle2("abcd", 2);
+  const std::vector<Word> component = {{0,0,Direction::ACROSS}, {0,0,Direction::DOWN}, {1,0,Direction::ACROSS}};
+  const std::string dumped = DumpComponent(puzzle2, component);
+  if(dumped != "abaccd") std::cout << "bad dumpedcomponent " << dumped;
+  FillComponent(&puzzle2, component, "wxwyyz");
+  if(puzzle2.Data() != "wxyz") std::cout << "bad filled then dumped " << puzzle2.Data();
+
   return 0;
 }
+

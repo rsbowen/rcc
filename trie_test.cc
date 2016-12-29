@@ -11,16 +11,16 @@ int main(int argc, char* argv[]) {
 
   std::cout << "adding" << std::endl;
   trie.AddWord("alpha");
-  trie.AddWord("alphabet");
-  trie.AddWord("betamax");
+  trie.AddWord("ALPHABET");
+  trie.AddWord("BETAMAX");
   trie.AddWord("beta");
   trie.AddWord("data");
 
   std::cout << "checking" << std::endl;
   if(!trie.CheckWord("alpha")) std::cout << "alpha" << std::endl;
   if(!trie.CheckWord("alphabet")) std::cout << "alphabet" << std::endl;
-  if(!trie.CheckWord("betamax")) std::cout << "betamax" << std::endl;
-  if(!trie.CheckWord("beta")) std::cout << "beta" << std::endl;
+  if(!trie.CheckWord("BETAMAX")) std::cout << "betamax" << std::endl;
+  if(!trie.CheckWord("BETA")) std::cout << "beta" << std::endl;
 
   if(trie.CheckWord("gamma")) std::cout << "gamma" << std::endl;
   if(trie.CheckWord("alp")) std::cout << "alp" << std::endl;
