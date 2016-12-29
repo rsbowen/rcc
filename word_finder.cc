@@ -55,3 +55,20 @@ bool VectorWordFinder::LookUp(const std::string& word) const {
   return false;
 }
 
+TrieWordFinder::TrieWordFinder(const std::vector<std::string>& dictionary) {
+  for(const auto& word : dictionary) {
+    trie_.AddWord(word);
+  }
+}
+
+int TrieWordFinder::LazyNumberOfMatches(int k, const std::string& pattern) const {
+  return trie_.LazyNumberOfMatches(k, pattern);
+}
+
+void TrieWordFinder::FillMatches(std::vector<std::string>* matches, const std::string& pattern) const {
+  trie_.Matches(pattern, matches);
+}
+
+bool TrieWordFinder::LookUp(const std::string& word) const {
+  return trie_.CheckWord(word);
+}
