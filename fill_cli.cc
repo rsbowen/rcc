@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <cmath>
 
 #include "puzzle.h"
 #include "fill.h"
@@ -35,17 +36,23 @@ int main(int argc, char* argv[]) {
   while(std::getline(myfile, line)) { puzzle.append(line); }
   }
 
-  std::cout << puzzle.size();
+  int side_len = std::sqrt(puzzle.size());
 
-  Puzzle p(puzzle, 5);
+  if(side_len*side_len != puzzle.size()) {
+    std::cout << "weird size " << puzzle.size() << std::endl;
+    return -1;
+  }
+
+
+  Puzzle p(puzzle, side_len);
   std::cout << p.PrettyString() << std::endl;
 
   std::string biggest;
   std::string filled = Fill(p, &finder, &biggest);
   if(filled.empty()) {
-    std::cout << "No soln, biggest " << Puzzle(biggest, 5).PrettyString() << std::endl;
+    std::cout << "No soln, biggest " << Puzzle(biggest, side_len).PrettyString() << std::endl;
   } else {
-    Puzzle p2(filled, 5);
+    Puzzle p2(filled, side_len);
     std::cout << p2.PrettyString() << std::endl;
     PuzzleIterator pi(p2);
     while(pi.Valid()) {
