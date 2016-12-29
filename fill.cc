@@ -42,7 +42,7 @@ struct FillSearchState {
 // TODO: naming
 // TODO: maybe this should be a member function of FillSearchState
 // return value is true if it's done.
-string SingleThing(const std::vector<FillOrderEntry>& fill_order, const PuzzleGraph& graph, std::stack<FillSearchState>* stack, const WordFinder* word_finder, const WordFinder* user_word_finder, std::map<std::pair<int, std::string>, ComponentMemoization>* component_starts_seen) {
+string SingleThing(const std::vector<FillOrderEntry>& fill_order, const PuzzleGraph& graph, std::stack<FillSearchState>* stack, const WordFinder* word_finder, const WordFinder* user_word_finder, std::map<std::pair<int, std::string>, ComponentMemoization>* component_starts_seen, std::string* biggest_fill) {
   FillSearchState search_state = stack->top();
   //std::cout << "---------------------" << std::endl;
   //std::cout << "SingleThing on puzzle" << std::endl << search_state.puzzle_.PrettyString();
@@ -106,6 +106,12 @@ string SingleThing(const std::vector<FillOrderEntry>& fill_order, const PuzzleGr
     new_state.first_in_c = false;
     stack->push(new_state);
   }
+  if(matches.empty()) {
+    std::string fill_here = search_state.puzzle_.Data();
+    if(std::count(fill_here.begin(), fill_here.end(), ' ') < std::count(biggest_fill->begin(), biggest_fill->end(), ' ')) {
+      *biggest_fill = fill_here;
+    }
+  }
   return "";
 }
 
@@ -113,7 +119,8 @@ string SingleThing(const std::vector<FillOrderEntry>& fill_order, const PuzzleGr
 // Maintain a stack of partially-filled puzzles and indices.
 // Uses a predetermined order.
 // TODO: memoize the small CC's, which is where I actually expect getting a speedup here.
-string Fill(const Puzzle& puzzle, const WordFinder* word_finder) {
+string Fill(const Puzzle& puzzle, const WordFinder* word_finder, string* biggest_fill) {
+  *biggest_fill = puzzle.Data();
   std::stack<FillSearchState> depth_first_stack;
   // Save the words which were user-provided in the sense that they are complete words in the puzzle.
   std::vector<std::string> input_words = puzzle.AllWords();
@@ -143,7 +150,7 @@ string Fill(const Puzzle& puzzle, const WordFinder* word_finder) {
   */
   
   while(!depth_first_stack.empty()) {
-    string result = SingleThing(fill_order, puzzle_graph, &depth_first_stack, word_finder, &user_word_finder, &component_starts_seen);
+    string result = SingleThing(fill_order, puzzle_graph, &depth_first_stack, word_finder, &user_word_finder, &component_starts_seen, biggest_fill);
     if(!result.empty()) return result;
   }
   for(const auto& component_memo_pair : component_starts_seen) {

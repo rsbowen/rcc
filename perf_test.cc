@@ -13,11 +13,12 @@ using Clock = std::chrono::high_resolution_clock;
 void RealWorldTest(WordFinder* finder) {
   Puzzle puzzle("FAB# C   #DAGAIR# A   #OBOALI# K   #YES##D  E  # O  PRESS##   U##  A #TWELFTHS  N#  E  #A    D   D # K    G   ##  E    R #     T##  O#HONOR#H    O#     #IDD  M#     #S  ", 13);
   std::cout << "Puzzle is " << puzzle.PrettyString();
-  const std::string soln = Fill(puzzle, finder);
+  std::string biggest;
+  const std::string soln = Fill(puzzle, finder, &biggest);
 
   // Betcha this is real slow :)
   if(soln.empty()) {
-    std::cout << "no solution " << std::endl;
+    std::cout << "no solution " << std::endl << Puzzle(biggest, 13).PrettyString() << std::endl;
   } else {
     std::cout << "solution " << Puzzle(soln, 13).PrettyString() << std::endl;
   }
@@ -27,7 +28,8 @@ void NXNTest(const WordFinder* finder, const int side_length) {
   // Empty n-by-n puzzle
   const std::string puzzle_template(side_length*side_length, ' ');
   Puzzle puzzle(puzzle_template, side_length);
-  std::cout << "solution '" << Fill(puzzle, finder) << "'" << std::endl;
+  std::string x;
+  std::cout << "solution '" << Fill(puzzle, finder, &x) << "'" << std::endl;
 }
 
 int main(int argc, char* argv[]) {

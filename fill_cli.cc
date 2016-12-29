@@ -40,9 +40,10 @@ int main(int argc, char* argv[]) {
   Puzzle p(puzzle, 5);
   std::cout << p.PrettyString() << std::endl;
 
-  std::string filled = Fill(p, &finder);
+  std::string biggest;
+  std::string filled = Fill(p, &finder, &biggest);
   if(filled.empty()) {
-    std::cout << "No soln" << std::endl;
+    std::cout << "No soln, biggest " << Puzzle(biggest, 5).PrettyString() << std::endl;
   } else {
     Puzzle p2(filled, 5);
     std::cout << p2.PrettyString() << std::endl;
