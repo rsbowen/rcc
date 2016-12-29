@@ -8,9 +8,8 @@
 
 class TrieNode {
   // TODO: fix the access level by making Trie a friend class
-  // TODO: maybe a fixed-size array
  public:
-  std::map<char, std::unique_ptr<TrieNode>> children;
+  std::array<std::unique_ptr<TrieNode>, 26> children;
   bool is_word_end;
   // Returns nullptr if the child doesn't exit.
   TrieNode* ChildOrNull(char c);

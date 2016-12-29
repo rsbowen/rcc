@@ -3,6 +3,7 @@
 Trie::Trie() : root_(new TrieNode) {
 }
 
+// TODO: maybe can reduce branching etc. by making a canonical representation and sanitizing input at hte Finder level.
 void Upper(char* c) {
   if(*c >= 'a' && *c <= 'z') {
     *c = 'A' + (*c - 'a');
@@ -11,21 +12,17 @@ void Upper(char* c) {
 
 TrieNode* TrieNode::ChildOrNull(char c) {
   Upper(&c);
-  auto iter = children.find(c);
-  if(iter != children.end()) {
-    return iter->second.get();
-  }
-  return nullptr;
+  return children[c-'A'].get();
 }
 
 TrieNode* TrieNode::Child(char c) {
   Upper(&c);
-  TrieNode* ptr = children[c].get();
+  TrieNode* ptr = children[c-'A'].get();
   if(ptr==nullptr) {
     std::unique_ptr<TrieNode> new_node(new TrieNode);
-    children[c] = std::move(new_node);
+    children[c-'A'] = std::move(new_node);
   }
-  return children[c].get();
+  return children[c-'A'].get();
 }
 
 void Trie::AddWord(const std::string& s) {
