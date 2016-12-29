@@ -50,6 +50,9 @@ perf_test : perf_test.cc puzzle.o word_finder.o fill.o graph.o trie.o
 graph_test: graph_test.cc graph.o puzzle.o
 	$(CC) $(LINK_FLAGS) graph_test.cc puzzle.o graph.o -o graph_test
 
+trie_perf_test : trie_perf_test.cc word_finder.o trie.o
+	$(CC) $(LINK_FLAGS) trie_perf_test.cc word_finder.o trie.o -o trie_perf_test
+
 # Other binaries
 
 fill_cli: fill_cli.cc puzzle.o word_finder.o fill.o graph.o trie.o
