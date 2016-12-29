@@ -28,18 +28,21 @@ int main(int argc, char* argv[]) {
   TrieWordFinder finder(words_dict);
   std::cout << "done reading" << std::endl;
 
+  const int nMatches = 10000;
   const auto time_1 = Clock::now();
-  // Do 10000 random lookups.
-  const int nLookups = 10000;
-  bool x;
-  for(int i = 0; i< nLookups; ++i) {
-    x ^= finder.LookUp(words_dict[rand() % words_dict.size()]);
+  // Do 10000 random lazy matches with k=50 TODO is that a reasonable parameter.
+  int x = 0;
+  for(int i = 0; i< nMatches; ++i) {
+    std::string word = words_dict[rand() % words_dict.size()];
+    int a = 0;
+    for(char& c : word) {
+      if((++a)%2) c = ' ';
+    }
+    x^=finder.LazyNumberOfMatches(50, word);
   }
 
   const auto time_2 = Clock::now();
   // Do 10000 random matches.
-  int y = 0;
-  const int nMatches = 10000;
   std::vector<std::string> matches;
   for(int i=0;i<nMatches; ++i) {
     matches.clear();
@@ -53,7 +56,7 @@ int main(int argc, char* argv[]) {
   
   const auto time_3 = Clock::now();
   std::chrono::duration<double> elapsed_seconds_1 = time_2 - time_1;
-  std::cout << "done lookup time:" << elapsed_seconds_1.count() << std::endl;
+  std::cout << "done lazy time:" << elapsed_seconds_1.count() << std::endl;
 
   std::chrono::duration<double> elapsed_seconds_2 = time_3 - time_2;
   std::cout << "done match time:" << elapsed_seconds_2.count() << std::endl;
