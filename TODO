@@ -1,0 +1,11 @@
+* Various code cleanup: naming, etc (marked with TODOs in code)
+* Improve framework for fill order to improve figuring out new strategy
+* Break down and test the important-for-perf stuff: fill.cc and FillOrder, to make it easier to iterate
+* Compute statistics on # of times FindMatches is called
+* Random ordering of matches
+* Black squares in generative test
+* Negative examples in generative test
+* Interactive interface
+* More benchmarks (perf test)
+* Lint
+* Better testing framework (i.e.: a testing framework at all)
