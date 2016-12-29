@@ -19,7 +19,7 @@ string RandomGrid(const int size) {
   for(int row = 0; row < size; ++row) {
     for(int col = 0; col < size; ++col) {
       int c = rand() % 26;
-      completed_puzzle.push_back('a'+c);
+      completed_puzzle.push_back('A'+c);
     }
   }
   return completed_puzzle;
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
         string new_word = pattern;
 	for(int pattern_idx = 0; pattern_idx < pattern.size(); ++pattern_idx) {
 	  if(new_word[pattern_idx] == ' ') {
-	    new_word[pattern_idx] = 'a' + (rand() % 26);
+	    new_word[pattern_idx] = 'A' + (rand() % 26);
 	    num_blanks++;
 	  }
 	}
