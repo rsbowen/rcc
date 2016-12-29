@@ -42,10 +42,10 @@ bool Trie::CheckWord(const std::string& s) const {
   return node->is_word_end;
  }
 
- void MatchesHelper(const std::string& pattern, int pattern_idx, const std::string& prefix, std::vector<std::string>* matches, TrieNode* node) {
+ void MatchesHelper(const std::string& pattern, int pattern_idx, std::string* prefix, std::vector<std::string>* matches, TrieNode* node) {
    if(pattern_idx == pattern.size()) {
      if(node->is_word_end) {
-       matches->push_back(prefix);
+       matches->push_back(*prefix);
      }
      return;
    }
@@ -56,17 +56,20 @@ bool Trie::CheckWord(const std::string& s) const {
    if(c==' ') {
      for(char f = 'A'; f<='Z'; ++f) {
        TrieNode* child = node->ChildOrNull(f);
-       if(child) MatchesHelper(pattern, pattern_idx+1, prefix+f, matches, child);
+       (*prefix)[pattern_idx] = f;
+       if(child) MatchesHelper(pattern, pattern_idx+1, prefix, matches, child);
      }
      return;
    }
 
    TrieNode* child = node->ChildOrNull(c);
-   if(child) MatchesHelper(pattern, pattern_idx+1, prefix+c, matches, child);
+   (*prefix)[pattern_idx] = c;
+   if(child) MatchesHelper(pattern, pattern_idx+1, prefix, matches, child);
  }
 
  void Trie::Matches(const std::string& pattern, std::vector<std::string>* matches) const {
-   return MatchesHelper(pattern, 0, "", matches, root_.get());
+   std::string prefix(pattern.size(), ' ');
+   return MatchesHelper(pattern, 0, &prefix, matches, root_.get());
  }
 
 void LazyMatchesHelper(int k, const std::string& pattern, TrieNode* node, int* total)
