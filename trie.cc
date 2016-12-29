@@ -73,34 +73,33 @@ bool Trie::CheckWord(const std::string& s) const {
    return MatchesHelper(pattern, 0, &prefix, matches, root_.get());
  }
 
-void LazyMatchesHelper(int k, const std::string& pattern, TrieNode* node, int* total)
+void LazyMatchesHelper(int k, const std::string& pattern, int pattern_idx, TrieNode* node, int* total)
 {
   if(*total >= k) return;
 
-  if(pattern.empty()) {
+  if(pattern.size() == pattern_idx) {
     if(node->is_word_end) {
       (*total)++;
     }
     return;
   }
-  char c = pattern[0];
-  const std::string rest = pattern.substr(1,pattern.size());
+  char c = pattern[pattern_idx];
 
   if(c==' ') {
     for(char f = 'A'; f<='Z'; ++f) {
       TrieNode* child = node->ChildOrNull(f);
-      if(child) LazyMatchesHelper(k, rest, child, total);
+      if(child) LazyMatchesHelper(k, pattern, pattern_idx+1, child, total);
     }
     return;
   }
 
   TrieNode* child = node->ChildOrNull(c);
-  if(child) LazyMatchesHelper(k, rest, child, total);
+  if(child) LazyMatchesHelper(k, pattern, pattern_idx+1, child, total);
 }
 
  
 int Trie::LazyNumberOfMatches(int k, const std::string& pattern) const {
   int total = 0;
-  LazyMatchesHelper(k, pattern, root_.get(), &total);
+  LazyMatchesHelper(k, pattern, 0, root_.get(), &total);
   return total;
 }
