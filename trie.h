@@ -6,10 +6,16 @@
 #include <map>
 #include <memory>
 
-struct TrieNode {
+class TrieNode {
+  // TODO: fix the access level by making Trie a friend class
   // TODO: maybe a fixed-size array
+ public:
   std::map<char, std::unique_ptr<TrieNode>> children;
   bool is_word_end;
+  // Returns nullptr if the child doesn't exit.
+  TrieNode* ChildOrNull(char c);
+  // Returns pointer to the child, creating child if needed.
+  TrieNode* Child(char c);
 };
 
 class Trie {

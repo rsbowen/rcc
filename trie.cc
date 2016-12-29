@@ -9,18 +9,29 @@ void Upper(char* c) {
   }
 }
 
+TrieNode* TrieNode::ChildOrNull(char c) {
+  Upper(&c);
+  auto iter = children.find(c);
+  if(iter != children.end()) {
+    return iter->second.get();
+  }
+  return nullptr;
+}
+
+TrieNode* TrieNode::Child(char c) {
+  Upper(&c);
+  TrieNode* ptr = children[c].get();
+  if(ptr==nullptr) {
+    std::unique_ptr<TrieNode> new_node(new TrieNode);
+    children[c] = std::move(new_node);
+  }
+  return children[c].get();
+}
+
 void Trie::AddWord(const std::string& s) {
   TrieNode* node = root_.get();
   for(char c : s) {
-    Upper(&c);
-    auto iter = node->children.find(c);
-    if(iter != node->children.end()) {
-      node = iter->second.get();
-      continue;
-    }
-    std::unique_ptr<TrieNode> new_node(new TrieNode);
-    node->children[c] = std::move(new_node);
-    node = node->children[c].get();
+    node = node->Child(c);
   }
   node->is_word_end = true;
 }
@@ -28,22 +39,11 @@ void Trie::AddWord(const std::string& s) {
 bool Trie::CheckWord(const std::string& s) const {
   TrieNode* node = root_.get();
   for(char c : s) {
-    Upper(&c);
-    auto iter = node->children.find(c);
-    if(iter == node->children.end()) {
-      return false;
-    }
-    node = iter->second.get();
+    node = node->ChildOrNull(c);
+    if(!node) return false;
   }
   return node->is_word_end;
  }
-
-TrieNode* ChildOrNull(TrieNode* node, char c) {
-  Upper(&c);
-  auto iter = node->children.find(c);
-  if(iter == node->children.end()) return nullptr;
-  return iter->second.get();
-}
 
  void MatchesHelper(const std::string& pattern, const std::string& prefix, std::vector<std::string>* matches, TrieNode* node) {
    if(pattern.empty()) {
@@ -54,17 +54,18 @@ TrieNode* ChildOrNull(TrieNode* node, char c) {
    }
 
    char c = pattern[0];
+   Upper(&c);
    const std::string rest = pattern.substr(1,pattern.size());
 
    if(c==' ') {
      for(char f = 'A'; f<='Z'; ++f) {
-       TrieNode* child = ChildOrNull(node, f);
+       TrieNode* child = node->ChildOrNull(f);
        if(child) MatchesHelper(rest, prefix+f, matches, child);
      }
      return;
    }
 
-   TrieNode* child = ChildOrNull(node, c);
+   TrieNode* child = node->ChildOrNull(c);
    if(child) MatchesHelper(rest, prefix+c, matches, child);
  }
 
@@ -87,13 +88,13 @@ void LazyMatchesHelper(int k, const std::string& pattern, TrieNode* node, int* t
 
   if(c==' ') {
     for(char f = 'A'; f<='Z'; ++f) {
-      TrieNode* child = ChildOrNull(node, f);
+      TrieNode* child = node->ChildOrNull(f);
       if(child) LazyMatchesHelper(k, rest, child, total);
     }
     return;
   }
 
-  TrieNode* child = ChildOrNull(node, c);
+  TrieNode* child = node->ChildOrNull(c);
   if(child) LazyMatchesHelper(k, rest, child, total);
 }
 

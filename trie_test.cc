@@ -27,13 +27,13 @@ int main(int argc, char* argv[]) {
   if(trie.CheckWord("alps")) std::cout << "alps" << std::endl;
 
   std::vector<std::string> matches;
-  trie.Matches("  ta", &matches);
+  trie.Matches("  Ta", &matches);
   if(matches.size() != 2) {
     std::cout << "bad matches size: " << matches.size() << std::endl;
   }
   std::sort(matches.begin(), matches.end());
-  if(matches[0] != "beta") std::cout << "matches[0] neq beta " << matches[0] << std::endl;
-  if(matches[1] != "data") std::cout << "matches[1] neq data " << matches[1] << std::endl;
+  if(matches[0] != "BETA") std::cout << "matches[0] neq BETA " << matches[0] << std::endl;
+  if(matches[1] != "DATA") std::cout << "matches[1] neq DATA " << matches[1] << std::endl;
 
   std::cout << "Done testing" << std::endl;
 }
